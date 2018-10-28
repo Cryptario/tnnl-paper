@@ -1,5 +1,5 @@
 
-\newcommand{\version}{v0.9.1}
+\newcommand{\version}{v0.9.2}
 
 %-- PACKAGES AND LAYOUT ----------------------------------------------%
 \documentclass[letterpaper]{article}
@@ -1056,12 +1056,12 @@ as the $auxiliary$ $input$ that satisfies the following constraints:
 \begin{itemize}[noitemsep,topsep=0pt]
 	\item \textbf{Merkle path validity} --- (which is enforced if $v_{pub}^{old} \neq 0$) where each $n_i \in \vec{n}^{old}$, when hashed with the values of $\psi_i$, MUST produce $rt_i$.
 	\item \textbf{Contract address equivalence} --- (which is enforced if $v_{pub}^{old} \neq 0 \lor v_{pub}^{new} \neq 0$) where $c_{addr}$ MUST match each $n^{old}_i.c_{addr} \in \vec{n}^{old}$ and $n^{new}_i.c_{addr} \in \vec{n}^{new}$.
-	\item \textbf{Balance} --- $ v_{pub}^{old} + \sum_{i=1}^{2} n_{i}^{old}.v = v_{pub}^{new} + \sum_{i=1}^{2} n_{i}^{new}.v \in \{0 .. 2^{64} - 1\}$.
-	\item \textbf{Nullifier integrity} --- for each $i \in \{1, 2\}: \nf_{i}^{old} = \func{compNull}{n_i}{\aski{}_i} $.% (where \func{compNull} is as described in \cref{sec:nullifs}).
-	\item \textbf{Spend authority} --- for each $i \in \{1, 2\}: n_i^{old}.\apkT = \func{derivePubAccountKey}{\aski{}_i}$.
-	\item \textbf{Non-malleability} --- for each $i \in \{1, 2\}: h_{i} = \func{compAuth}{i}{\aski{}_i}{h_{sig}} $ (where \func{compAuth}{...}\xspace is as described in \cref{sec:authCodes}).
-	\item \textbf{Uniqueness of $\vec{\rho}^{new}$} --- for each $i \in \{1, 2\}: n_i.\rho^{new} = \func{derRho}{i}{\varphi}{h_{sig}} $ (where \func{derRho}{...}\xspace is as described in \cref{sec:derRho}).
-	\item \textbf{Note commitment integrity} --- for each $i \in \{1, 2\}: \varsigma = \func{commit}{n_i}.$
+	\item \textbf{Balance} --- $ v_{pub}^{old} + \sum_{i=0}^{1} n_{i}^{old}.v = v_{pub}^{new} + \sum_{i=0}^{1} n_{i}^{new}.v \in \{0 .. 2^{64} - 1\}$.
+	\item \textbf{Nullifier integrity} --- for each $i \in \{0, 1\}: \nf_{i}^{old} = \func{compNull}{n_i}{\aski{}_i} $.% (where \func{compNull} is as described in \cref{sec:nullifs}).
+	\item \textbf{Spend authority} --- for each $i \in \{0, 1\}: n_i^{old}.\apkT = \func{derivePubAccountKey}{\aski{}_i}$.
+	\item \textbf{Non-malleability} --- for each $i \in \{0, 1\}: h_{i} = \func{compAuth}{i}{\aski{}_i}{h_{sig}} $ (where \func{compAuth}{...}\xspace is as described in \cref{sec:authCodes}).
+	\item \textbf{Uniqueness of $\vec{\rho}^{new}$} --- for each $i \in \{0, 1\}: n_i.\rho^{new} = \func{derRho}{i}{\varphi}{h_{sig}} $ (where \func{derRho}{...}\xspace is as described in \cref{sec:derRho}).
+	\item \textbf{Note commitment integrity} --- for each $i \in \{0, 1\}: \varsigma = \func{commit}{n_i}.$
 \end{itemize}
 
 \newcommand{\JoinSplitKeyPair}{\textsf{JoinSplitKeyPair}\xspace}

@@ -1,0 +1,1263 @@
+%-- PACKAGES AND LAYOUT ----------------------------------------------%
+\documentclass[letterpaper]{article}
+%\usepackage{authblk}
+\usepackage[sorting=none,backend=bibtex]{biblatex}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage[T1]{fontenc}
+%\usepackage{kpfonts,baskervald}
+\usepackage[tabular,sups]{Baskervaldx} % osff
+\usepackage{lipsum}
+\usepackage{xspace}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\crefname{section}{\S}{\S\S}
+\Crefname{section}{\S}{\S\S}
+\usepackage{calrsfs}
+\usepackage{siunitx}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\usepackage{pagecolor,lipsum}%http://ctan.org/pkg/{pagecolor,lipsum}
+\usepackage{xcolor}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage{titlesec}
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+{\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+	{3.25ex \@plus1ex \@minus.2ex}%
+	{-1em}%
+	{\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+	{3.25ex \@plus1ex \@minus .2ex}%
+	{-1em}%
+	{\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+\crefname{subsubsubsection}{\S}{\S\S}
+\Crefname{subsubsubsection}{\S}{\S\S}
+
+
+%\usepackage{numdef}
+
+\DeclareMathAlphabet{\pazocal}{OMS}{zplm}{m}{n}
+\addbibresource{refs.bib}
+
+\mathchardef\ordinarycolon\mathcode`\:
+\mathcode`\:=\string"8000
+\begingroup \catcode`\:=\active
+\gdef:{\mathrel{\mathop\ordinarycolon}}
+\endgroup
+
+%-- CUSTOM COMMANDS --------------------------------------------------%
+\newcommand{\term}[1]{\textsl{#1}\kern 0.05em\xspace}
+\newcommand{\titleterm}[1]{#1}
+\newcommand{\termbf}[1]{\textbf{#1}\xspace}
+\newcommand{\swappable}[1]{#1\xspace}
+\newcommand{\quotedterm}[1]{``~\!\!\term{#1}''}
+\newcommand{\conformance}[1]{\textbnx{#1}\xspace}
+\newcommand{\emdash}{\unskip\,---\,\ignorespaces}
+%\newcommand{\Oa}{\mathcal{O}}
+\newcommand{\PointAtInfinity}{\pazocal{O}}
+\newcommand{\typecolon}{\;\hollowcolon\;}
+\newcommand{\GF}[1]{\mathbb{F}_{\!#1}}
+\newcommand{\GFstar}[1]{\mathbb{F}^\ast_{#1}}
+\newcommand{\justif}[2]{&{#1}&\text{#2}}
+\newcommand{\pk}{\textsf{pk}\xspace}
+\newcommand{\vk}{\textsf{vk}\xspace}
+\newcommand{\Gone}{$\mathbb{G}_1$\xspace}
+\newcommand{\Gtwo}{$\mathbb{G}_2$\xspace}
+\newcommand{\Gtar}{$\mathbb{G}_T$\xspace}
+\newcommand{\vA}{$\vec{A}$\xspace}
+\newcommand{\vB}{$\vec{B}$\xspace}
+\newcommand{\vC}{$\vec{C}$\xspace}
+%\newcommand{\indent}{\hspace{\parindent}}
+
+%\newcommand{\La}{\mathcal{L}}
+%\newcommand{\Lb}{\pazocal{L}}
+\newcommand{\cl}[1]{\pazocal{#1}}
+\newcommand{\Th}{^{\text{\tiny th}}}
+
+\newcommand{\network}{\textit{\textsf{network}}\xspace}
+\newcommand{\shielded}{\textit{\textsf{shielded}}\xspace}
+
+\newtheorem{example}{Example}
+
+\newenvironment{nscenter}
+{\parskip=0pt\par\nopagebreak\centering}
+{\par\noindent\ignorespacesafterend}
+\newenvironment{lscenter}
+{\parskip=4pt\par\nopagebreak\centering}
+{\par\noindent\ignorespacesafterend}
+
+\makeatletter
+\newcommand{\deffunc}[2]{\csgdef{decl@#1}{\texttt{#2}}}% Creates a declaration
+\newcommand{\csvdel}{}% Delimiter used in CSV representation
+\newcommand{\func}[2][,]{% Use a declaration
+	\renewcommand{\csvdel}{\renewcommand{\csvdel}{#1\,}}% Delay \csvdel one cycle.
+	\csname decl@#2\endcsname(\checknextarg}
+\newcommand{\checknextarg}{\@ifnextchar\bgroup{\gobblenext}{}}% Check if another "argument" exists
+\newcommand{\gobblenext}[1]{\csvdel#1\@ifnextchar\bgroup{\gobblenext}{)}}% Gobble next "arg	\begin{description}ument"
+\makeatother
+
+
+%-- TERMINOLOGY ------------------------------------------------------%
+\newcommand{\tnnl}{\termbf{tnnl}}
+\newcommand{\Zerocash}{\termbf{Zerocash}}
+\newcommand{\Zcash}{\termbf{Zcash}}
+\newcommand{\QZcash}{\termbf{``Zcash''}}
+\newcommand{\SproutZcash}{\termbf{Sprout Zcash}}
+\newcommand{\SaplingZcash}{\termbf{Sapling Zcash}}
+\newcommand{\QSproutZcash}{\termbf{``Sprout'' Zcash}}
+\newcommand{\QSaplingZcash}{\termbf{``Sapling'' Zcash}}
+\newcommand{\Bitcoin}{\termbf{Bitcoin}}
+\newcommand{\Ethereum}{\termbf{Ethereum}}
+\newcommand{\CryptoNote}{\termbf{CryptoNote}}
+\newcommand{\Monero}{\termbf{Monero}}
+\newcommand{\ShaTwo}{\swappable{SHA-256}}
+
+\newcommand{\aski}{a_{sk}}
+\newcommand{\vecask}{\vec{a}_{sk}}
+\newcommand{\ask}{$\aski$\xspace}
+\newcommand{\apk}{$a_{pk}$\xspace}
+\newcommand{\apkT}{a_{pk}}
+\newcommand{\skenc}{$sk_{enc}$\xspace}
+\newcommand{\pkenc}{$pk_{enc}$\xspace}
+\newcommand{\addrpk}{$addr_{pk}$\xspace}
+\newcommand{\ivk}{$ivk$\xspace}
+\newcommand{\nf}{\theta}
+
+\newcommand{\PRF}{\texttt{PRF}\xspace}
+\newcommand{\SHAFULL}{\texttt{Sha256}\xspace}
+\newcommand{\SHACOMP}{\texttt{Sha256Compression}\xspace}
+\newcommand{\COMM}{\textsf{COMM}{}\xspace}
+\newcommand{\chacha}{AEAD\textunderscore CHACHA20\textunderscore POLY130\xspace}
+
+% declare some interface routines
+\deffunc{shaFull}{Sha256}
+\deffunc{shaComp}{Sha256Compression}
+\deffunc{keccak}{Keccak256}
+\deffunc{compHSig}{ComputeHSig}
+\deffunc{compNull}{ComputeNullifier}
+\deffunc{ecdh}{ECDH}
+\deffunc{kdf}{KDF}
+\deffunc{chacha}{\chacha{}}
+\deffunc{seal}{Seal}
+\deffunc{open}{Open}
+\deffunc{commit}{CommitToNote}
+\deffunc{prf}{PRF}
+\deffunc{derivePubAccountKey}{DeriveAccountPublicKey}
+\deffunc{derivePrivMemKey}{DeriveSealPrivateKey}
+\deffunc{derivePubMemKey}{DeriveSealPublicKey}
+\deffunc{getPath}{GetMerklePath}
+\deffunc{compAuth}{ComputeAuthCode}
+\deffunc{derRho}{DeriveRho}
+
+\deffunc{serJS}{SerializeJoinSplit}
+\deffunc{serTJS}{SerializeTnnlJoinSplit}
+\deffunc{packProof}{PackProof}
+
+\newcommand{\UintTFS}{\textsf{Uint256}\xspace}
+\newcommand{\UintTFT}{\textsf{Uint252}\xspace}
+\newcommand{\UintTE}{\textsf{Uint208}\xspace}
+\newcommand{\UintOS}{\textsf{Uint160}\xspace}
+\newcommand{\UintNS}{\textsf{Uint96}\xspace}
+\newcommand{\UintSF}{\textsf{Uint64}\xspace}
+\newcommand{\Bit}{\textsf{Bit}\xspace}
+\newcommand{\String}{\textsf{String}\xspace}
+\newcommand{\BString}{\textsf{BString}\xspace}
+\newcommand{\BStringMod}{\textsf{BStringMod512}\xspace}
+\newcommand{\memoPubType}{\textsf{Secp256k1Element}\xspace}
+\newcommand{\Note}{\textsf{Note}\xspace}
+\newcommand{\JoinSplit}{\textsf{JoinSplit}$_{\pi}$\xspace}
+\newcommand{\tJoinSplit}{\textsf{tnnlJoinSplit}$_{\pi}$\xspace}
+\newcommand{\MPath}{\textsf{MerklePath}\xspace}
+\newcommand{\MNode}{\textsf{MerkleNode}\xspace}
+\newcommand{\MLeaf}{\textsf{MerkleLeaf}\xspace}
+
+\newcommand{\concat}{\circ\xspace}
+
+%-- DOCUMENT PROPERTIES ----------------------------------------------%
+\title{tnnl: A Privacy Layer for Standards-Compliant Fungible Tokens}
+\author{Alex Geiger \\ \href{mailto:alex@cryptar.io}{alex@cryptar.io} \and
+Julian Geiger \\ \href{mailto:julian@cryptar.io}{julian@cryptar.io}}
+\date{%
+	Cryptographic Applications Research, LLC\\[2ex]%
+	\today
+%BEGIN_PAPER_VERSION
+	\\v0.9.0
+%END_PAPER_VERSION 
+}
+
+\color{white!100}
+\begin{document}
+\pagecolor{black!87!violet!100}
+
+\maketitle
+
+\begin{abstract}
+	The current \Ethereum token-oriented ecosystem is lacking in
+	privacy. With the `Byzantium' hard-fork to the \Ethereum network,
+	it became possible to implement a confidential transaction system
+	using zk-SNARKs; however, with a preexisting token infrastructure,
+	it is a non-trivial amount of work for current tokens that are in
+	want of privacy features to incorporate the technology enabled by
+	the latest hard-fork. We propose a system that provides 
+	\textit{all} preexisting ERC20-compliant, ERC223-compliant, ERC677-compliant, and ERC777-compliant tokens
+	a means of operating in a confidential manner.
+\end{abstract}
+
+
+\section{Introduction} %----------------------------------------------%
+\tnnl is a privacy layer for the \Ethereum \cite{ethOrig, ethLatest, ethYell} network that is derived from
+\Zcash \cite{zcash}. The structure of this document is intended to provide some
+foundational information (in the form of informal definitions,
+a brief background overview, a high-level description of zk-SNARKs, and
+a notional summary of \Zcash) before laying out the primary challenges
+of transplanting the \Zcash protocol to the \Ethereum network and
+finally, a protocol specification for \tnnl. Those already with an understanding of \Zcash and \Ethereum may skip to \cref{sec:tnnlProtocol}.
+
+\subsection{Definitions}
+We first provide a few relevant but informal definitions. More formal
+definitions, while more informative, are too technical for a high-level
+protocol overview. Basic familiarity with blockchains,
+particularly \Bitcoin \cite{bitcoin} and \Ethereum, is assumed.
+
+\begin{description}
+	\item[Zero-Knowledge Proof \cite{zkProofs}] \hfill \\ Information provided by one
+	party, the \textit{prover}, that convinces another party, the \textit{verifier},
+	that the prover is in possession of some secret; the information
+	provided does not impart knowledge of the
+	secret to the verifier. A malicious prover additionally is unable to convince the verifier with a false proof.
+	
+	\item[zk-SNARK \cite{firstSnark, pinocchio, bctv14, groth16} ] \hfill \\ (Zero-Knowledge `Succinct Non-interactive
+	ARgument of Knowledge.') A class of zero-knowledge proving
+	protocols suitable for blockchains, where an arbitrary program goes
+	through several transformations. 
+	% One such transformation uses elliptic curve cryptography (ECC).
+	The result of these
+	transformations is a circuit, proving key, and verification key;
+	the proving key and verification key can be used respectively with
+	the circuit to generate and verify concise zero-knowledge proofs.
+	zk-SNARKs are given a more in-depth, albeit non-specific and only mildly-technical, summary in 
+	\cref{sec:snarkOverview}. 
+
+	\item[Cryptographically-Secure Hash Function \cite{mHash}] \hfill \\ A \textit{hash
+	function} is a one-way function that operates on an arbitrary-length
+	binary string (`message') that produces a fixed-length output
+	(`message digest'). Two properties of a \textit{cryptographically-secure}
+	hash function are: (1) \textit{first preimage resistance}, where the message
+	digest cannot be used to determine the inputted message; and (2)
+	\textit{second preimage resistance}, where no input can produce the same
+	message digest as another input.
+
+	\item[Merkle Tree \cite{mTrees}] \hfill \\ A form of binary trie where nodes are assigned values of the message digests of their leaves or child-nodes. All nodes
+	and leaves are hashed in this manner until a single root hash is
+	produced. When viewed as a hash function itself, a Merkle tree of this description is \textbf{not} cryptographically-secure, as, by definition, it does not meet the second preimage resistance criterion.
+
+	\item[Fixed-Depth Merkle Tree \cite{incTrees}] \hfill \\ A subset of Merkle tree
+	where all appendations to the tree are at a predetermined depth---that is to say, all leaf-nodes are ``at the same level.''
+	Only a finite amount of entries can be made to an
+	instance of a fixed-depth Merkle tree. When viewed as a hash function, a fixed-depth Merkle tree \textit{is} cryptographically-secure provided that the hash function used is also cryptographically secure.
+\end{description}
+
+\subsection{Notation}
+	Let $E$ denote an elliptic curve and $\mathbb{F}_n$ denote a finite field of size $n$. Let $\vec{v}$ denote a vector and $v_1$ denote the first entry of $\vec{v}$. Let $\concat$ denote concatenation.
+
+
+\subsection{ZK Digital Currency: From Theory to Reality}
+\label{sec:zkHistory}
+While the concept of using zero-knowledge (`zk') proofs in
+cash-analogue cryptosystems predates even the first successful
+cryptocurrency, \Bitcoin, by at least twelve years \cite{nsa}, a
+practical implementation of such a system was not possible until relatively
+recently. After a series of many theoretical proposals of systems using
+various iterations of zero-knowledge proofs had been proposed
+\cite{zerocoin, pinocchiocoin, zerocash}, the flagship practical
+implementation utilizing zero-knowledge proofs as a means of performing
+confidential transactions was realized and deployed as \Zcash\footnote{\Zcash is going through a major protocol change, so it is important to differentiate between the two versions. In this subsection (\cref{sec:zkHistory}), \QZcash refers to the project as a whole; in the remaining sections, \QZcash refers to the initial version of the \Zcash protocol.} on
+October 28, 2016.
+
+\Zcash is, in
+essence, a fork of \Bitcoin that has privacy-preserving capabilities. The initial version of \Zcash, referable as \QSproutZcash (in order to
+differentiate from the \QSaplingZcash protocol upgrades), used the
+BCTV14 proving system \cite{bctv14}, a concrete implementation of a
+zk-SNARK proving protocol.
+
+%http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.673.8208&rep=rep1&type=pdf
+
+The \Ethereum network, having launched on July 30, 2015, is a public-ledger that \emdash as it was developed prior to \SproutZcash\emdash has formed a prevailing `standard token' lacking the level of privacy enabled via zk-SNARKs. The result is \textit{more than} \$13,000,000,000 USD worth of tokens (at the time of publication) where all the token holders are determinable to powerful adversaries.
+
+After \SproutZcash demonstrated that its form of zero-knowledge proofs are a viable means of enabling confidential transactions, \Ethereum developers worked to add the capability to perform the same class of zero-knowledge proofs to its already-existing network. In the latest hard-fork to the \Ethereum network known as `Byzantium,' the capabilities to perform three elliptical curve operations were added in the form of `precompiled contracts.' These three operations are elliptic curve addition, scalar multiplication, and pairing checks. Together these three operations enable on-chain verifications of the same types of zero-knowledge proofs used by \SproutZcash\footnote{The elliptical curve operations provided in the `Byzantium' fork do not enable a reasonably secure version of the \SaplingZcash protocol to be implemented (which is why \tnnl is derived from the earlier \SproutZcash protocol), as the \Ethereum operations currently provided are implemented only for a particular elliptic curve. The curve used in \SaplingZcash has what is called an `embedded curve' (which is an elliptic curve implemented over the order of the actual curve acting as a finite field) of a high prime order, meaning that more sophisticated mechanisms can be used within zero-knowledge proofs. The \SproutZcash curve that the `Byzantium' fork provided does not have an embedded curve of prime order, meaning that the embedded curve is only as secure as its order's biggest prime factor. The \tnnl protocol does not rely on an embedded curve.}.
+
+%https://etherscan.io/tokens
+%val = 0;trs = $('#ContentPlaceHolder1_divresult tbody').find('tr');$.each(trs, function (i, tr) { var value = (parseInt($(tr).find('td:last').html().replace(/[^0-9]/g, ''))); if (value && value > 0) { val+=value; } });console.log(val.toLocaleString());
+
+\section{High-Level Overview of zk-SNARKs} %---------------------------%
+\label{sec:snarkOverview}
+While zk-SNARKs are a very dense topic with a lot of ongoing, technical research, a conceptual understanding of the properties of zk-SNARK proving systems is crucial for the comparison of \tnnl to \Zcash in following sections. In this document, we only provide an `as-surface-as-possible' comprehension of zk-SNARKs, largely because there are a variety of zk-SNARK proving systems, many of which differ in their constructions of their secure parameters.
+
+\subsection{zk-SNARK Programs}
+
+zk-SNARK proving systems are designed in such a manner that one can start with an arbitrary,
+high-level computer program that is intended to fulfill a confidential 
+role
+within the broader context of
+an encompassing system. Concisely stated, the intended function of a zk-SNARK scheme is to produce a verifiable proof that the program in question was executed properly without necessarily knowing the inputs, outputs, or intermediary variables used in the construction of the proof.
+
+\subsubsection{Key components}
+Most zk-SNARK proving systems provide two \textit{keys}. One is used by the prover to generate a proof and is referred to as the \textit{proving key}. The other key is used by the verifier to verify a proof and is called the \textit{verifying} or \textit{verification key}. In contrast to the public-private key-pairs in asymmetric cryptosystems, both the key components are public. The relation of the keys to each other is to remain unknown to all.
+
+\subsubsection{Private/public input differentiation}
+When some inputs to a zk-SNARK program are intended to be made public, they are referred to as \textit{primary inputs}. %In most implementations of zk-SNARKs proving schemes, these public inputs the first inputs to a program.
+The other arguments that are intended to remain private are referred to as \textit{auxiliary inputs}.
+
+\subsubsection{Code flattening and constraints}
+Variables are not `reused' in  a zk-SNARK program. Instead of reassignment of a variable, a new intermediate variable is used in a process called \textit{flattening}. Flattening occurs because, when designing a zk-SNARK program, one must define \textit{constraints} describing the relations between intermediary variables that must be met in order for the execution of the program to be considered valid. The assignments to all the inputs and intermediary variables from an execution of a program are together known as the \textit{witness}.
+
+\subsubsection{Common domain-specific library}
+Much of the leading zk-SNARK research has produced \texttt{libsnark}, an open-source C++ library with implementations of many proving systems. Most zk-SNARK-related projects either use \texttt{libsnark} directly or consume other libraries that utilize \texttt{libsnark}. 
+
+%NOTE at some point: intermediary are often called computed variables...
+
+
+\subsection{Algorithms}
+zk-SNARK schemes typically define three algorithms, all of which depend on the program in the form of a circuit (which is elaborated on in \cref{sec:circuitElaboration}). The three core algorithms are:
+\begin{enumerate}
+	\item \textbf{\texttt{KeyGen}:} Where two sets of parameters are generated that are utilized in the remaining two algorithms. The first set of parameters is the \textit{proving key} and is denoted as \pk. The second set of parameters the \textit{verification key} or the \textit{verifying key} and is denoted as \vk. This key generation process is usually a one-time process, since the generated parameters are reusable. (This algorithm is often referred to as the ``set-up phase.'')
+	
+	\item \textbf{\texttt{Compute}:} Where the proving key \pk is used to generate a \textit{proof} (which is denoted as $\pi$ in zero-knowledge literature).
+	
+	\item \textbf{\texttt{Verify}:} Where the proof $\pi$ is checked using the verifying key \vk. %Specifically, the validity of the knowledge commitments, coefficient consistency, and QAP divisibility are checked. If all the checks pass, $\pi$ is considered probabilistically valid. (This is the only algorithm that must be computed ``on-chain''.)
+\end{enumerate}
+	
+\subsection{Transformations}\label{sec:circuitElaboration}
+To achieve zero-knowledge, the high-level program goes through a series of complex transformations.
+
+\begin{itemize}
+		
+	\item
+	First, the high-level program is transformed into an arithmetic circuit $C$. While there are tools that allow high-level programs to be compiled into an arithmetic circuit, it is currently the case that ``hand-written'' arithmetic circuits are usually more optimized to the point where manual transformations of a program (via encapsulation) is standard practice. Constraints for the inevitably-resulting witness are defined alongside the logic that populates the witness. 
+	
+	\item
+	The circuit and constraints are then transformed into a set of three matrices corresponding to the variables and constraints in the original program. This form is referred to as a \textit{rank-1 constraint system (R1CS)}.
+	
+	\item
+	The R1CS is then transformed into a \textit{quadratic arithmetic program (QAP)}, denoted as $\sigma$, using Lagrange Interpolation on each constraint. $\sigma$ is a tuple that comprises of three sets of polynomials ($\vec{A}$, $\vec{B}$, and $\vec{C}$).
+
+	This transformation of the R1CS to $\sigma$ is a bi-directional transformation, and evaluating the polynomials at a point $x$ produces the $x\Th$ constraint.
+	
+%http://indigo.ie/~mscott/twists.pdf
+	\item
+	The QAP $\sigma$, along with the circuit $C$, can at this point be used to complete a zk-SNARK protocol specification. zk-SNARK protocols typically leverage a bilinear map\footnote{The security models of zk-SNARK proving systems typically assume symmetric bilinear maps, but in practice more-efficient asymmetric bilinear maps are used.}
+	$ e : \mathbb{G}_1 \times  \mathbb{G}_2 \rightarrow \mathbb{G}_T$, where $\mathbb{G}_1$ and $\mathbb{G}_2$ are cyclic order-$r$ subgroups of $E(\mathbb{F}_p)$ and $E^{\prime}(\mathbb{F}_{p^\text{k/d}})$ respectively. Let $p$ denote a large prime number, $k$ denote an embedding degree, and $d$ denote the degree of the twist making $E^{\prime}$ the $d\Th$ twist of $E$ \cite{twists}. Let $g_1$ and $g_2$ denote the generators for $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively; all other elements (with the exception of key components) of $\mathbb{G}_1$ and $\mathbb{G}_2$ are denoted 
+	as 
+	%or in?
+	calligraphic letters such as $\cl{P}$ and $\cl{Q}$.
+	%$\mathbb{G}_1$, $\mathbb{G}_2$, and $\mathbb{G}_T$ are all of prime order $r$.
+	\Gtar is the subgroup of the $r\Th$ roots of unity in $\mathbb{F}_{p^\text{k}}$.
+	The bilinearity of $e$ is expressed by:
+
+
+	\begin{center}
+	$e(u \cl{P}, v \cl{Q}) = e(\cl{P}, \cl{Q})^{uv}$
+
+	%$e(\cl{P}, \cl{Q} + \cl{R}) = e(\cl{P}, \cl{Q}) \times e(\cl{P}, \cl{R})$
+	
+	%$e(\cl{P} +  \cl{Q}, \cl{R}) = e(\cl{P}, \cl{R}) \times e(\cl{Q}, \cl{R})$
+	\end{center}
+
+	Depending on the exact specification of a proving system, \pk comprises of points in \Gone and \Gtwo that are the results of evaluating and transforming \vA, \vB, and \vC at and by uniformly random secret points $\vec{s}$ before performing a group multiplicative operation with either $g_1$ or $g_2$.
+
+\vk loosely comprises of points that are computed by taking the product of the secret points $\vec{s}$ and the generator points of isomorphic counterparts to the points computed in \pk. The secret points $\vec{s}$ are destroyed, and the only known way that a prover can generate a proof $\pi$ that satisfies the checks of the \texttt{Verify} algorithm is by using a valid witness $\vec{w}$ with the proving key \pk.
+
+
+
+\begin{example}
+
+	As part of its \texttt{KeyGen} algorithm, one proving system evaluates each polynomial $A_i$ in $\vec{A}$ at a randomly sampled point $\tau$. Another  point $\alpha$ is also randomly sampled.
+	
+	The following proving key components are generated:
+	
+	
+	%https://tex.stackexchange.com/questions/45650/two-sets-of-aligned-equations-in-two-columns	
+	
+	\begin{equation*}
+	\begin{aligned}[c]
+\pk_{A_i} := A_i(\tau) g_1
+	\end{aligned}
+	\qquad
+	\begin{aligned}[c]
+\pk_{A_i}^\prime := A_i(\tau) g_1 \alpha
+	\end{aligned}
+	\end{equation*}	
+	
+	The verification key has a corresponding component:
+
+\begin{center}
+		$\vk_{A} := \alpha g_2 $
+\end{center}
+
+	The prover, using a witness $\vec{w}$ and following the \texttt{Compute} algorithm, generates the following proof-components:
+	
+	\begin{equation*}
+	\begin{aligned}[c]
+\pi_{A} :=  \langle \vec{w}, \pk_A \rangle
+	\end{aligned}
+	\qquad
+	\begin{aligned}[c]
+\pi_{A}^\prime :=  \langle \vec{w}, \pk_A^\prime \rangle
+	\end{aligned}
+	\end{equation*}
+
+	The \texttt{Verify} algorithm for this proving system prescribes that we check (amongst other things):
+	
+	\begin{center}
+		$e(\pi_A, \textsf{vk}_{A}) = e(\pi_A^\prime, g_2)$
+	\end{center}
+	
+	This check can be expanded for clarity:
+	%	Let $t,u \in \mathbb{R}$ where $t=xy$ and $u=zw$. So,
+		\begin{align*}
+e(\pi_A, \textsf{vk}_{A}) &= e(\pi_A^\prime, g_2) \\
+		e(\langle \vec{w}, \textsf{pk}_A \rangle, \textsf{vk}_{A}) &= e(\langle \vec{w}, \textsf{pk}_A^\prime \rangle, g_2) \\
+		e(\langle \vec{w}, A(\tau) g_1 \rangle, \alpha g_2) &= e(\langle \vec{w}, A(\tau) g_1 \alpha \rangle, g_2)\\
+		e(\langle \vec{w}, A(\tau) g_1 \rangle, \alpha g_2) &= e(\langle \vec{w}, A(\tau) g_1 \rangle \alpha, g_2) &&\text{(Factor out constant $\alpha$ in the RHS linear combination)} \\ 
+e(\cl{U}, \alpha g_2) &= e(\cl{U} \alpha, g_2) &&\text{(Substitute $\cl{U}$ for $ \langle \vec{w}, A(\tau) g_1 \rangle $)}\\
+e(\cl{U}, g_2)^{\alpha} &= e(\cl{U}, g_2)^{\alpha} &&\qed
+		\end{align*}
+	
+			
+		Under the assumption that $\tau$ and $\alpha$ were destroyed, the only way (probabilistically) that a prover could provide a valid knowledge-commitment pairing for the $\vec{A}$ query was if the prover used a witness $\vec{w}$ and computed the linear combinations using the proving key \textsf{pk}.\footnote{This proving system requires other checks to ensure that the witness $\vec{w}$ is the result of a \textit{valid} execution of the program. In actuality, the proving system (BCTV14 \cite{bctv14}) adds another parameter, $\rho_A$ to both of the explicitly mentioned proving key components. Similar components and verification steps are used for the $\vec{B}$ and $\vec{C}$ queries. Another set of key components and verification checks (which use $\rho_A$, $\rho_B$, and $\rho_C$ from the homomorphic trapdoor commitments) ensure that the same coefficients were used for the $\vec{A}$, $\vec{B}$, and $\vec{C}$ queries. Finally, another set of key components and checks are used to ensure that the $\vec{A}$, $\vec{B}$, and $\vec{C}$ queries use a witness that is the result of a valid execution of the program.}
+%			 (by checking if the proof's \vec{h} coefficients ($\pi_H$) are a multiple of the coefficients valid solution QAPs )
+			
+		
+	\end{example}
+	
+%TODO: We need proper element notation?	
+%	Let $\mathbb{L}/\mathbb{K}$ be a finite field extension, and $\alpha\in\mathbb{L}$. Then every element $a\in\mathbb{K}(\alpha)$ can be expressed as the sum $a_0\cdot 1 + a_1\cdot \alpha + \cdots + a_k\cdot\alpha^k$ for some $k$, where $a_i\in\mathbb{K}$.
+		
+\end{itemize}
+
+
+
+\section{Ideally Private Tokens}
+We define an ideally private token as a transactable digital asset where transactions bear the following three properties:
+\begin{itemize}
+	\item \textbf{Sender Privacy:} Where the initiator of a transaction is not immediately identifiable.
+	\item \textbf{Payment Confidentiality:} Where the amount transacted is unknown to non-participants of the transaction.
+	\item \textbf{Receiver Privacy:} Where the intended recipient of a transaction is not immediately identifiable.
+\end{itemize}
+
+\section{\Zcash Summary}
+In this section, we give an overview of the \Zcash protocol. Since \Zcash's primary goal is to achieve privacy, we first emphasize on how \Zcash's \textit{shielded} protocol meets the criteria of ideal privacy before getting into some of the necessary steps for transitioning from a transparent protocol such as \Bitcoin into the \textit{shielded} protocol that enables ideally private transactions. We do not provide an overview of the other aspects of the \Zcash protocol (mining, block subsidy, scripting, etc.).
+
+Private transactions in \Zcash are \textit{note-oriented}, where the transactions create and/or combine \textit{notes}. A note is created (or \textit{minted}) when an amount of currency is taken ``out of circulation'' from the transparent system to produce a unique commitment of the information required to ``spend'' (transfer ownership of the currency amount or reintroduce into the transparent system) the associated value. More specifically, the commitment \textit{is} the \ShaTwo digest of this ``information required to spend.'' The information required to spend comprises of the amount, the owner's paying key (similar to a \textit{public key} in asymmetric cryptography), and some additional information that will be noted once other aspects of the \Zcash protocol are described.
+
+\subsection{Sender Privacy}
+\Zcash achieves its sender privacy via an incremental, fixed-depth Merkle tree inside the zk-SNARK's circuit, which fulfills the role of a \textit{cryptographic accumulator}. All notes, upon validation of the transaction that results in their creation, are appended to the \textit{note commitment tree} at the next available index.
+
+A prover wishing to generate a transaction that spends a note first finds the commitment to that note in the tree, and then determines what is called the \textit{Merkle path} \emdash a list of all the digests that the commitment must be hashed with to produce the root hash of the tree \emdash and provides this private information along with the root hash of the tree as a primary input.
+
+The program uses the note commitment and Merkle path inputs to compute a root hash and provides constraints that the computed root hash must be equal to the publicly-inputted root hash. As long as a cryptographically-secure hash function is used for the Merkle tree, this approach to zero-knowledge set membership is cryptographically-sound since there is no other way to produce the root hash. Given the \textit{second preimage resistance} assumption, only either the true hashes of all the nodes and leaves (or a Merkle branch from the tree) can produce the root hash.
+
+\subsection{Payment Confidentiality}
+%This is where the zk-SNARKs shine!
+Purely private \Zcash transactions take in \textit{two} notes as inputs and produce two notes as outputs.
+% Two possibilities that this approach allows is that the values of two notes can be combined to produce one note or the value of a note can be split into two notes.
+Values of two input notes can be combined to produce a new note equal to the sum of the inputs and a dummy note or they can be combined to produce two notes of different denominations also equal to the sum of the inputs. Input and output value equality is sometimes referred to as ``conservation-of-money.''
+With the conservation-of-money constraints, the actual amounts of notes never need to be made public, meaning that transactions can occur where only the parties involved know the amounts transacted.
+
+
+%https://tools.ietf.org/id/draft-kasamatsu-bncurves-01.html
+%https://eprint.iacr.org/2007/390.pdf
+%https://books.google.com/books?id=loKqCAAAQBAJ&pg=PA4https://eprint.iacr.org/2007/390.pdf24&lpg=PA424&dq=bn128+twist&source=bl&ots=TBJqfRCNZm&sig=ZP9sYDTft5Ht5LoabbObzaenzBM&hl=en&sa=X&ved=0ahUKEwiby47D9vvbAhXUMX0KHeCRCG0Q6AEIQzAE#v=onepage&q=bn128%20twist&f=false
+
+\subsection{Receiver Privacy}
+The \textit{recipient} of a transaction of an asset is the party to which \textit{ownership} of the asset is transferred to. In this case, ownership is more specifically the authority to spend a note.
+
+The authority of the party initiating the transaction to spend the notes is determined by whether or not they know the $spending$ $key$ corresponding to the $paying$ $key$ of the note. The spending key and paying key for each note are private inputs to the program. The privately-inputted spending key is used to derive a computed paying key and constraints are in place to ensure that the computed paying key matches the privately-inputted spending key. Ownership of the output notes is simply determined by the paying keys, which are private inputs, used for the commitment of the new notes.
+
+In addition to the paying key, the initiator of the transaction must privately provide all of the remaining information used to generate the commitment for the note. The information required to spend each new note is encrypted using the \textit{transmission key} of the recipient. A party determines if they are a recipient of a transaction by listening for all transactions and attempting to decrypt the encrypted data with their \textit{viewing key}; if the decryption is successful, they are the recipient.
+
+
+\subsection{Additional Protocol Concerns}
+\Zcash also solves the traditional problem that all digital currencies must solve: \textit{double-spend protection}.
+
+\Zcash's transparent protocol is essentially the \Bitcoin protocol, so double-spend protection of transparent transactions is the same as in \Bitcoin (where the first transaction is the accepted one), but the privacy-centric protocol provides double-spend protection in a different manner.
+
+Notes, when spent, must publicly reveal a \textit{nullifier}. This nullifier is deterministically computed from the blinded information required to spend the note and is unique. In the zk-SNARK program, there are constraints that ensure that the nullifier is correctly computed, and the \Zcash protocol also stipulates that a nullifier may only be used once.
+
+\subsection{Transitioning From Transparent Protocol}
+Transitioning from a transparent, publicly-verifiable digital payment protocol, similar to \Bitcoin, to the shielded protocol described above requires the introduction of two more types of transactions. At this point, we are familiar with two types of transactions, but there are a total of four, as described by the \Zcash community:
+
+\begin{enumerate}
+	\item \textbf{Public:} Where both parties and the amounts are known. The transparent protocol of \Bitcoin falls into this classification. Tokens implementing the ERC20 interface also fall into this classification.
+	\item \textbf{Shielding:} Where the amount transacted is easy to determine, but the receiving address stores the balance essentially as a blinded hash, where any subsequent transaction amounts will not be exactly knowable (though, they cannot exceed the initial amount if no other spends occur involving the address in question).
+	\item \textbf{Deshielding:} The inverse of shielding; where a blinded amount is un-blinded and transacted to a transparent address.
+	\item \textbf{Private:} Where the transaction occurs between two private addresses, and the amount transacted is not known. The shielded protocol described in the previous sections falls into this classification.
+\end{enumerate}
+
+The shielding transaction type is necessary for ``setting the stage.'' A visible amount is removed from the transparent system and two notes are created containing the removed amount. This transaction itself does not have the properties of ideal privacy since the transaction was initiated in a transparent system, but because the receiving system's protocol allows for sender privacy, subsequent transactions spending the notes will be ideally private.
+
+The deshielding transaction type is necessary for the re-introduction of the shielded amounts back into the transparent system. These types of transactions still have sender privacy, but there is a loss of payment confidentiality and receiver privacy.
+
+In \Zcash, all transactions involving shielded values \emdash whether shielding, private, or deshielding \emdash use the same circuit. 
+The shielding transaction type is enabled via a 
+$v_{pub}^{old}$ parameter, and the deshielding transaction type is enabled 
+via a $v_{pub}^{new}$ parameter.
+
+
+\section{Challenges}\label{sec:challenges}
+A direct `port' of \Zcash's circuit is unsuitable for a  token-shielding system. There are primarily two compatibility challenges. While a random \Zcash transaction was successfully verified on an \Ethereum testnet, (1) there is a severe privacy concern with the fundamental nature of the \textbf{Ethereum Virtual Machine (EVM)} when the technology is sought to be used by real users on the \Ethereum network. There is also a concern (2) that many of the other operations that would need to be performed by an \Ethereum port of \Zcash upon a successful verification of a proof would bear too high of a gas cost.
+
+\subsection{The ``Gas Leak'' Challenge}
+Because \Ethereum network transactions require that the ``broadcaster'' of the transaction pay for the execution of the invoked code, and that the network currency, Ether, used to pay for the transaction lacks privacy features, any privacy-focused networks, systems, and tokens implemented on top of the \Ethereum network will be lacking in sender privacy.
+
+\subsubsection{``Gas leak'' solution}
+The solution to the issue of gas payments leaking information about a transaction requires a distinction between the \Ethereum network transaction, which can be viewed as an interaction on a relatively low-level protocol, and a transaction on the privacy layer network. The privacy layer network is implemented on top of the \Ethereum network.
+
+To get around the issue of ``sender pays the gas,'' the privacy layer network's protocol provides a mechanism for some other party to broadcast the transaction to the \Ethereum network so that ``someone else to pay the gas.'' This means that the broadcaster of a transaction can be distinct from the initiator of a transaction.
+
+To simultaneously solve a similar networking-level issue, we note that most leading \Ethereum clients also include Whisper, a mesh-net intended for ``dapp''-level messaging. This is prime for an onion-routing implementation. A broadcast-path is to be pseudo-randomly chosen, and the final node of the broadcast-path broadcasts the transaction to the \Ethereum network without any knowledge of the party that originally initiated the transaction. The last node is able to insert an \Ethereum address and claim the reward. The details of this protocol are specified in \cref{sec:whor}.
+
+% TODO: Broadcaster probably DOESN'T just insert their address, nor do we just use the address of the sender . . . a malicious Ethereum miner could see the transaction and broadcast the same thing, giving their own precedence. The receiving fee address must be part of the signature.
+
+The privacy network also ensures that there are always peers available to broadcast transactions, by both requiring a market-determined amount of privacy layer network tokens to be ``spent'' to initiate the transaction, and providing a deterministic amount as a reward to the broadcaster.
+
+It should also be noted that the privacy-layer network token must bear the same level of privacy as the non-network token seeking privacy. This is so that the initiator of the transaction can still spend with sender privacy.
+
+\subsection{Challenge of Incompatible Optimizations}
+The second issue is the result of ``optimizations'' within the gadgets in the circuit used in constructing a zero-knowledge proof in the \Zcash protocol. The \Zcash protocol uses the \ShaTwo \textit{compression} algorithm, which is not the same as the full secure hashing algorithm as specified in NIST 180.4. The difference between full \ShaTwo and the \ShaTwo compression algorithm is that the compression algorithm omits the padding step. These optimizations were made because all uses of the compression algorithm in \Zcash operate on blocks that are already appropriate lengths (modulo 512 bits in length).
+
+To understand the difficulty here requires knowledge of how many cryptographic primitives are accessed in \Ethereum.
+
+\subsubsection{Precompiled contracts}
+The EVM operates on bytecode that corresponds to opcodes of a virtual machine, where each opcode has a cost proportional to the number of computational steps that the operation requires.
+
+Some routines that are common to the blockchain paradigm (such as hash functions) are implemented in a different form. These are operations that are implemented in the \Ethereum client itself \emdash which is ``closer to the metal'' and more efficient to execute. A smart contract address is associated with an operation. These types of special operations, which are implemented in the client and specified with the use of an agreed-upon contract address, are called \textit{precompiled contracts}.
+
+The \ShaTwo algorithm is implemented in this manner, as it would be somewhat cost prohibitive to implement in bytecode within a broader context of larger system that also performs other operations. The incompatability between this optimized approach to \Ethereum and the optimization in the \Zcash circuit is that \textbf{only} the \textit{full} \ShaTwo algorithm is implemented, meaning various aspects of the \Zcash protocol cannot be transplanted to the \Ethereum network without modifications.
+
+\subsubsection{Incompatible optimizations solution}
+The current solution to this problem, short of submitting an \textbf{Ethereum Improvement Proposal (EIP)} for a \ShaTwo Compression precompiled contract\footnote{The use of precompiled contracts as a means of extending the capabilities of the EVM is an unsustainable approach and only highlights the flawed design of the EVM.}, using the current technology at our disposal is to get rid of the optimization in \Zcash's Merkle tree and use the \textit{full} \ShaTwo algorithm instead.
+
+This unfortunately comes at a significant computational cost, and in order to be computationally equivalent to the \Zcash circuit, the depth of the Merkle tree used must be halved (since full \ShaTwo would result in twice the amount of constraints due to the ``unnecessary'' padding imposed in Merkle--Damg\aa{}rd constructions).
+
+
+\subsection{Impact of Both ``Solutions'' to Aforementioned Challenges}
+
+The dramatic impact of both solutions \emdash recall that the first solution was the introduction of a network token that is simultaneously transacted and the second was the substitution of full \ShaTwo for \ShaTwo compression in the Merkle tree \emdash is that, in order to be computationally equivalent to \Zcash, the depth of the Merkle tree must be reduced by $75\%$. This is because the two aforementioned solutions \textit{both} double the amount of constraints.
+
+The \Zcash Merkle tree uses a depth of $29$, meaning it can contain $2^{28}$ notes, or  $268,435,456$ notes. The depth of a Merkle tree for a rough computational equivalence to the \Zcash Merkle tree, using the same proving system and given the aforementioned solutions, would be approximately $7$, or $64$ notes.
+
+The depth of the Merkle tree can be increased and bear the same computational equivalence (roughly) if we substitute a more efficient proving system. Amongst the various protocol changes for \SaplingZcash, one change that is compatible with the \Ethereum precompiles is the switch away from the BCTV14 proving system \cite{bctv14} to the Groth16 proving system \cite{groth16}. Groth16 generates proofs in about $65\%$ of the time of BCTV14, meaning that a depth of $11$ can be used with the Groth16 proving system and be roughly computationally equivalent\footnote{We say ``roughly'' as in actuality it is ideal for the degree of the QAP (number of constraints in the circuit) to be as close as possible to a power of two (but not exceeding). Depending on the optimizations that can be made to the new constraints in the circuit, the final depth may be greater than $11$.} to a depth of $7$, meaning that a Groth16 Merkle tree can contain $1024$ notes.
+
+One consequence of these changes is the loss of \textit{absolute} sender privacy. Instead of a spent note being any note, a spent note is now identifiable to a pool of $1024$ other notes. This is still superior to the level of privacy enabled by the \CryptoNote protocol (in terms of the set of the potential initiators of a transaction), used by \Monero and other Ring-Signature based privacy coins.
+
+With the switch to Groth16, the overall depth of the Merkle tree is larger, but it is still too shallow to be usable by a large network, as it would be exhausted fairly quickly. The na\"ive solution to this problem is to allow for multiple Merkle trees to be used, where notes are appended to a primary tree and once the primary tree is exhausted, all notes are appended to a \textit{new} primary tree, and so on. The issue with this solution is that it allows for an adversary to infringe upon a user's sender privacy by filling a primary tree with notes that they control in order to reduce the set of notes that a user could be spending from within a tree. This attack, with the shallow depth of the primary tree and an assumed cost of ~\$3 per transaction, is very cheap at ~\$768 USD. To resolve this issue, instead of \textit{a single} primary tree for notes to be appended to, \textit{multiple} ``primary'' trees are available to be appended to. In order to ensure that only one Merkle root needs to be recomputed per transaction, all output notes from a transaction are appended to the same tree (the number of outputs must be a power of two that is root (square, cubic, etc.) of a tree). The manner of determining the tree a transaction appends to is done by taking the hash of the $251$st-last block number modulo the (prime) number of concurrent trees.
+
+\section{Whisper Onion Router}\label{sec:whor}
+A user wishing to send a confidential payload selects three nodes on a particular Whisper topic, and, using the public keys of the selected nodes, encrypts the confidential transaction three times over using \func{ecdh}{\ldots{}}\xspace and  \func{chacha}{\ldots{}}\xspace (these algorithms are defined in \cref{sec:tnnlProtocol}).
+
+
+After discovering a set of peers able to broadcast a transaction to the Ethereum network, the selection of the nodes from the discovered set is done in a non-interactive manner. %TODO: CITE
+Specifically, the path taken and which nodes are selected is determined by:
+
+\begin{enumerate}
+	\item  Running the encoded transaction through a cryptographically secure hash function, specifically \func{keccak}{\ldots}\xspace (also defined in \cref{sec:tnnlProtocol}), to compute pseudo-entropy source $\xi$.
+
+	\item The number of discovered peers $\nu_{R_1}$ is used to find the $\nu_{R_1}^{th}$ prime number $\omega_{R_1}$. Let $N$ denote the collection of all discovered peers.
+	
+	\item The index $i_{R_1}$ of the first relay-node $R_{1}$ is determined by computing:
+		\begin{lscenter}
+			$i_{R_1} \equiv \xi \bmod \nu_{R_1}$
+		\end{lscenter}
+	\item $R_{1}$ is then removed from $N$, and $\nu_{R_1}$ is decremented to produce $\nu_{R_2}$. $\omega_{R_2}$ is calculated using $\nu_{R_2}$.
+	
+	\item The index $i_{R_2}$ of the second relay-node $R_{2}$ is determined by computing:
+	\begin{lscenter}
+		$i_{R_2} \equiv \xi \bmod \nu_{R_2}$
+	\end{lscenter}
+	\item $R_{2}$ is then removed from $N$, and $\nu_{R_2}$ is decremented to produce $\nu_{B}$. $\omega_{B}$ is calculated using the new $\nu_{B}$.
+	
+	\item The index $i_{B}$ of the broadcasting node $B$ is determined by computing:
+	\begin{lscenter}
+		$i_{B} \equiv \xi \bmod \nu_{B}$
+	\end{lscenter}
+\end{enumerate}
+
+\section{Network Incentive}
+As opposed to the staggered reward having of \Bitcoin (which is intended to occur every four years), distribution of the \tnnl network token occurs via a reversed and elongated discrete logistic ``curve.''
+
+Let $I_r$ be the reward iterator that is incremented with each recorded transaction. Let $S_T$ be the number of steps per reward tier and let $C_T$ be the current reward and $C_{T_i}$ be the current reward tier's index. Let $\mathcal{L}_m$ be a logistic map where $\mathcal{L}_m(x_{n+1}) := r x_n (1 - \frac{x_n}{M})$. Typically, $x_n \in \mathbb{R}$ and $r \in \mathbb{R}$ and $M \in \mathbb{R}$, but because the EVM lacks support for floating point numbers, it must be the case that $x_n \in \mathbb{Z}$ and $r \in \mathbb{Z}$ and $M \in \mathbb{Z}$ (a \textit{discrete} discrete logistic map is required).
+
+Assuming that the chosen values for $r$ and $M$ produce a curve resembling the standard logistic equation and reach stability at a point $x_s$, values for $\mathcal{L}_m$ are computed up to $x_s$ and comprise $\mathbb{T}$ (the set of reward tiers).
+
+As each transaction is recorded, $I_r$ is incremented (each increment is considered a step). The current reward tier index $C_{T_i}$ is determined using $I_r$ and $S_T$. (In practice $C_{T_i} := \sharp{\mathbb{T}} - (\floor*{\frac{I_r}{S_T}} + 1) $.) Let the next reward tier $N_T$ be the reward tier immediately preceding $C_T$. (That is to say, $N_{T_i} := \sharp{\mathbb{T}} - (\floor*{\frac{I_r}{S_T}} + 2) $.)
+
+The \textit{maximum} value rewarded $r_{max}$ to the broadcaster of the transaction is calculated as the mapping of $I_r \mod S_T$ to $[C_T,N_T]$.
+
+\subsection{Precompile Gas Cost Reduction Foresight}
+To address the possibility of the gas costs of the precompiled contracts used within \tnnl being reduced (as \Ethereum clients arrive upon more optimized implementations) and impacting the smoothness of the \tnnl network token distribution, the gas $g$ used in the transaction is an argument that determines the actual value rewarded $r_{act}$ to the broadcaster of the transaction.
+
+With each transaction, the average gas cost $g_{avg}$ (a moving average) is recomputed, and $r_{act}$ is the mapping of $g$ from $[1, g_{avg}]$ to $[0, r_{max}]$.\footnote{This specification of the calculation of $r_{act}$ is subject to change with experimentation of gas price tracking (as a measurement of transaction priority).}
+
+\section{tnnl Protocol Specification}\label{sec:tnnlProtocol}
+
+\textbf{NOTE:} \textit{Being derived from \Zcash, much of the protocol specification that follows is derived from the \Zcash protocol specification \cite{zcash}.}
+\\
+
+\noindent
+As a privacy \textit{layer} for \Ethereum, \tnnl relies on an \Ethereum client and communicates with the client via \Ethereum's standard JSON-RPC API. Part of the \tnnl privacy layer is implemented via a smart contract that exists on the \Ethereum network. Because this contract maintains the state of the Merkle trees and the Merkle paths used in crafting shielded transactions are determined via JSON-RPC, it is recommended that those seeking strong privacy do not rely on light clients that query other parties or public services such as Infura.
+
+\subsection{Primitive Types}
+All type-identifiers are denoted in sans serif lettering, such as \textsf{Uint64} and \textsf{Uint256}. Let a type-specifier \textsf{Type} with trailing square-brackets, such as \textsf{Type}[] denote a vector of \textsf{Type}. If no numeric literal is within the square brackets, the vector is of dynamic length; else if a numeric literal is provided (such as \textsf{Type[7]}), then the number literal specifies the length of the \textsf{Type} vector.
+\\
+\\
+\noindent
+Primitive types used in this specification are:
+\begin{description}
+	\item[\rm \Bit]
+	\hfill \\
+	A binary digit, where a literal value is expressed with 0 or 1.
+	
+	\item[\rm \UintTFS]
+	\hfill \\
+	An unsigned integer 256-bits in length.
+	
+	\item[\rm \UintTFT]
+	\hfill \\
+	An unsigned integer 252-bits in length.
+	
+	\item[\rm \UintTE]
+	\hfill \\
+	An unsigned integer 208-bits in length.
+	
+	\item[\rm \UintOS]
+	\hfill \\
+	An unsigned integer 160-bits in length.
+	
+	\item[\rm \UintNS]
+	\hfill \\
+	An unsigned integer 96-bits in length.
+	
+	\item[\rm \UintSF]
+	\hfill \\
+	An unsigned integer 64-bits in length.
+	
+	\item[\rm \String]
+	\hfill \\
+	An arbitrary-length array of bytes represented as US-ASCII characters. Literal values are represented in double quotes such as ``\texttt{abc}''. A \String is implicitly convertible to a \BString.
+	
+	\item[\rm \BString]
+	\hfill \\
+	An arbitrary-length binary string.
+	
+	\item[\rm \BStringMod]
+	\hfill \\
+	An binary string where the length must be modulo 512.
+	
+	\item[\rm \memoPubType]
+	\hfill \\
+	A tuple ($x$ : \UintTFS, $y$ : \UintTFS) denoting a point on the $secp256k1$\cite{sec2} curve. 
+\end{description}
+
+\subsection{Requisite Algorithms}
+
+In this protocol specification, algorithms are denoted in monospaced lettering and a list of arguments, such as  \func{shaComp}{$message$}.
+
+%TODO: Provide test vectors!!!
+\begin{description}
+	\item[\rm \func{shaFull}{$message$}]
+	\hfill \\
+	Denotes the full \ShaTwo algorithm as specified in \cite{NIST180-4}.
+	\newline
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $message$ : \BString
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $messageDigest$ : \UintTFS
+	\end{itemize}
+
+	\item[\rm \func{shaComp}{$message$}]
+	\hfill \\
+	Denotes the \ShaTwo \textit{compression} algorithm (essentially \SHAFULL, but without the preprocessing-padding step). The assumption is made that the bit-length of $message$ is a multiple of 512.
+	\newline
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $message$ : \BStringMod
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $messageDigest$ : \UintTFS
+	\end{itemize}
+	
+	
+	\item[\rm \func{prf}{$a$}{$b$}{$c$}{$d$}{$x$}{$y$}]
+	\hfill \\
+	Pseudo-random function that uses its arguments in a concatenated form $\kappa := a \circ b \circ c \circ d \circ x \circ y$ as an input to \func{shaComp}{$\kappa$}.
+	\newline
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $a$ : \Bit
+		\item $b$ : \Bit
+		\item $c$ : \Bit
+		\item $d$ : \Bit
+		\item $x$ : \UintTFT
+		\item $y$ : \UintTFS
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $pseudoRandomNumber$ : \UintTFS
+	\end{itemize}
+	
+	\item[\rm \func{keccak}{$message$}]
+	\hfill \\
+	Denotes the \texttt{Keccak-256} algorithm as specified in \cite{keccak}.
+	\newline
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $message$ : \BString
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $messageDigest$ : \UintTFS
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Key Components and Addresses}
+\subsubsection{Low-level key components}
+Algorithms mentioned in this subsection are defined in \cref{sec:keyAlgos}. A \tnnl account consists of four low-level key components:
+\begin{description}
+	\item[spending key \rm (\ask\xspace: \UintTFT)] \hfill \\ The value of \ask is uniformly random and intended to remain private at all times.
+	
+	\item[paying key \rm (\apk\xspace: \UintTFS)] \hfill \\ Derived from \ask using \func{derivePubAccountKey}{\ask{}}. %Used in tandem with the \textit{transmission key} to receive payments.
+	
+	\item[receiving key \rm (\skenc\xspace: \UintTFS)] \hfill \\ Derived from \ask using \func{derivePrivMemKey}{\ask{}}. The value of \skenc is to remain private at all times. %Used in tandem with \apk to  . . .
+	
+	\item[transmission key \rm (\pkenc\xspace: \memoPubType)] \hfill \\ Derived from \skenc using \func{derivePubMemKey}{\skenc{}}\xspace.
+	% (that is, taking \skenc and multiplying it by the generator point for $secp256k1$).
+\end{description}
+
+\subsubsection{Key component derivation algorithms}\label{sec:keyAlgos}
+Low-level key components are derived with the following algorithms:
+\begin{description}
+	\item[\rm \func{derivePubAccountKey}{\ask{}}]
+	\hfill \\
+	Computes an account public key \apk from \ask, where:
+	\begin{lscenter}
+		\apk $:=$ \func{prf}{1}{1}{0}{0}{\ask{}}{0}
+	\end{lscenter}
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \ask\xspace : \UintTFT
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \apk\xspace: \UintTFS
+	\end{itemize}
+	
+	\item[\rm \func{derivePrivMemKey}{\ask{}}]
+	\hfill \\
+	Internally computes an intermediate, unformatted private key $\mu$, where:
+	\begin{lscenter}
+		$\mu := $\xspace \func{prf}{1}{1}{0}{0}{\ask{}}{$2^{248}$}
+	\end{lscenter}
+	After $\mu$ computed, $\mu$ is then padded to the requisite length and returned as \skenc.
+	\newline
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \ask\xspace : \UintTFT
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \skenc\xspace: \UintTFS
+	\end{itemize}
+	
+	\item[\rm \func{derivePubMemKey}{\skenc{}}]
+	\hfill \\
+	Performs scalar multiplication of generator point $g_{secp256k1}$ with \skenc. 
+	\newline
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \skenc\xspace: \UintTFS
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \pkenc\xspace: \memoPubType
+	\end{itemize}
+	
+\end{description}
+
+
+\subsubsection{User-level key components}
+It is not intended for \tnnl users to deal with all of the aforementioned low-level key components directly. Instead, users are only required to understand their client maintains knowledge of the account's \ask{}, and the user only interacts with the following composite key-components:
+\begin{description}
+	\item[shielded payment address] \hfill \\
+	Denoted as \addrpk, the $shielded$ $payment$ $address$ is a tuple (\apk, \pkenc). A user wishing to receive a payment presents \addrpk. This address is reusable; although, as noted in the \Zcash protocol specification, colluding payers are able to determine if they have sent to the same address, so users may want to create separate addresses for each invoice.
+	
+	\item[incoming viewing key] \hfill \\
+	Denoted as \ivk, the $incoming$ $viewing$ $key$ is a tuple (\apk, \skenc). A user wishing to determine if they are a recipient of a particular note uses this key to attempt to decrypt the ciphertext which stores the necessary information to produce the commitment of the note.
+\end{description}	
+
+\subsection{Notes}
+A $note$ is a tuple (\apk, $c_{addr}$, $v$, $\rho$, $r$), where:
+
+%TODO: Types!!!
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item \apk\xspace: \UintTFS is the (low-level) owner's shielded paying key.
+	
+	\item $c_{addr}$ : \UintOS is the contract address of the token that is shielded. This field does not exist in \Zcash.
+	
+	\item $v$ : \UintSF is the value of the shielded token, in its smallest denomination.
+	
+	\item $\rho$ : \UintTFS is used as an input to derive the $nullifier$ of the note. The derivation of $\rho$ is stated in \cref{sec:derRho}.
+	
+	\item $r$ : \UintTE is a random blinding factor (also known as a commitment trapdoor). The length of $r$ differs from \Zcash to a slight detriment (in \Zcash it is 256) in order to accommodate the new $c_{addr}$ field without adding another block to the note commitment algorithm.
+\end{itemize}
+
+\noindent
+Let \Note be the type-identifier for an instance of a $note$ tuple.
+
+\subsubsection{Note commitments}
+Notes are appended to a Merkle tree in the form of a $commitment$ $\varsigma$. The following algorithm is used to compute the commitment of a \Note.
+\begin{description}
+	\item[\rm \func{commit}{$n$}]
+
+\hfill \\
+Generates a commitment $\varsigma$ for a \Note $n$. $n$ is unpacked to produce (\apk, $c_{addr}$, $v$, $\rho$, $r$). The result of \func{shaFull}{$1 \concat 0 \concat 1 \concat 1 \concat 0 \concat 0 \concat 0 \concat 0 \concat \apkT \concat c_{addr} \concat v \concat \rho \concat r$}\xspace is assigned to $\varsigma$.
+\newline
+\textsc{Inputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $n$ : \Note
+\end{itemize}
+\textsc{Outputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $\varsigma$ : \UintTFS
+\end{itemize}
+\end{description}
+
+\subsubsection{Note nullifiers}\label{sec:nullifs}
+To ensure that notes are only spent once, every \Note $n$ has a corresponding $nullifier$ $\nf$ that must be publicly revealed when $n$ is spent. The revelation of a $nullifier$ does not indicate which \Note is being spent, since the nullifier depends on \ask, which is never public. Additionally, because $nullifiers$ rely on \ask, they can only be generated by the owner of $n$. Nullifiers are computed using the following algorithm:
+
+\begin{description}
+	\item[\rm \func{compNull}{$n$}{\ask{}}]
+\hfill \\
+Computes a nullifier $\nf$ for a \Note $n$. $n$ is unpacked to retrieve $\rho$, which is used alongside \ask for this computation.
+\begin{lscenter}
+	$\nf := $\xspace \func{prf}{1}{1}{1}{0}{\ask{}}{$\rho$}
+\end{lscenter}
+\textsc{Inputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $n$ : \Note
+	\item \ask\xspace : \UintTFT
+\end{itemize}
+\textsc{Outputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $\nf$ : \UintTFS
+\end{itemize}
+\end{description}
+
+\newcommand{\esk}{$eph_{sk}$\xspace}
+\newcommand{\epk}{$eph_{pk}$\xspace}
+\subsubsection{Note encryption and decryption}
+The sender of a transaction generates an $ephemeral$ $keypair$, which is a tuple ($eph_{sk}$, $eph_{pk}$), where:
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item \esk{} : \UintTFS is the $ephemeral$ $private$ $key$, which uniformly random and is intended to stay secret.
+	\item \epk{} : \memoPubType is the $ephemeral$ $public$ $key$, which is included as part of the transaction along with the \Note's transmitted ciphertext. \epk is derived from \esk using \func{derivePubMemKey}{\esk{}}\xspace.
+\end{itemize}
+
+\noindent
+\newline
+\newcommand{\shs}{$\cl{S}$\xspace}
+\newcommand{\hSig}{$h_{sig}$\xspace}
+The following algorithm denotes the $Elliptic$-$curve$ $Diffie$--$Hellman$ key-agreement algorithm, which is used by both parties to arrive upon a shared secret \shs:
+
+\begin{description}
+	\item[\rm \func{ecdh}{$a$}{$\cl{B}$}]
+		\hfill \\
+	Group multiplication of public $\cl{B} \in \mathbb{G}_{secp256k1}$ by a secret scalar $a$.
+
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $a$ : \UintTFS
+		\item $\cl{B}$ : \memoPubType
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \shs{} : \memoPubType
+	\end{itemize}
+\end{description}
+
+\noindent
+The sender of a note uses their $ephemeral$ $private$ $key$ \esk as the first argument and the recipient's $transmission$ $key$ \pkenc as the second argument. The recipient uses their \skenc as the first argument and the sender's $ephemeral$ $public$ $key$ \epk as the second argument. Assuming that the recipient \textit{is} the intended recipient, then the following equality will hold and both parties have arrived at the same $shared$ $secret$ \shs:
+
+\begin{center}
+	\func{ecdh}{\esk{}}{\pkenc{}}\xspace $=$ \func{ecdh}{\skenc{}}{\epk{}}
+\end{center}
+
+\noindent
+The shared secret \shs is used as an input to the following $key$ $derivation$ $function$:
+
+%TODO: KeyAgreement algorithm, group multiplicitive operation on secp256k1
+%TODO: explain the memo field
+%TODO: explain that i is the note index, since there are 2 in a joinsplit (but joinsplits haven't been convered yet...)
+
+%"The nonce is zero because we never reuse keys." Also 'no "additional data" '  . . .
+% The all-zero nonce may change! This would require another argument as part of the full tnnlJoinSplit description . . .
+
+\begin{description}
+	\item[\rm \func{kdf}{$i$}{\hSig{}}{\shs{}}{\epk{}}{\pkenc{}}]
+	\hfill \\
+	Derives a key, denoted as $\delta$, used for the symmetric encryption and decryption of a \Note{} corresponding to index $i$. (Observe the seven zero-bits preceding $i$ which, when concatenated with $i$, occupy a byte.)
+	\begin{lscenter}
+		$\delta := $\xspace \func{keccak}{``\texttt{tnnlKDF}''$\concat{}0\concat{}0\concat{}0\concat{}0\concat{}0\concat{}0\concat{}0\concat{}i\concat$\hSig{}$\concat$\shs{}$\concat$\epk{}$\concat$\pkenc{}}
+	\end{lscenter}
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $i$ : \Bit
+		\item \hSig{} : \UintTFS
+		\item \shs{} : \memoPubType
+		\item \epk{} : \memoPubType
+		\item \pkenc{} : \memoPubType
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $\delta$ : \UintTFS
+	\end{itemize}
+\end{description}
+
+
+\noindent
+Once $\delta$ is derived, it is used as the key with the \texttt{\chacha} symmetric encryption scheme as per RFC-7539\cite{rfc7539}. The 96-bit nonce is ``all-zero'' (this acceptable because the $ephemeral$ $key$ is never reused) and the ``associated data'' is unassigned. The following algorithms denote symmetrical encryption and decryption of a \Note $n$:
+
+%https://github.com/calvinmetcalf/chacha20poly1305/issues/8
+
+\begin{description}
+	\item[\rm \func{seal}{$n$}{$\delta$}{$memo$}]
+	
+	\hfill \\
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $n$ : \Note
+		\item $\delta$ : \UintTFS
+		\item $memo$ : \String
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $ciphertext$ : \BString
+	\end{itemize}
+
+	\item[\rm \func{open}{$ciphertext$}{$\delta$}]
+\hfill \\
+\textsc{Inputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $ciphertext$ : \BString
+	\item $\delta$ : \UintTFS
+
+\end{itemize}
+\textsc{Outputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+		\item $n$ : \Note
+
+		\item $memo$ : \String
+\end{itemize}
+\end{description}
+
+\subsection{Merkle Paths}
+Let \MPath be the type-identifier for a $Merkle$ $path$, a tuple ($\vec{\eta}$, $\lambda$) where:
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $\vec{\eta}$ : \MNode{}[$11$]
+	\item  $\lambda$ : \MLeaf
+\end{itemize}
+and \MNode is a tuple where:
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $value$ : \UintTFS is the intermediary digest value
+	\item $index$ : \Bit is the value indicating which \textit{side} the intermediary digest value corresponds to.
+\end{itemize}
+
+\noindent
+\newline
+When a \Note $n$'s commitment $\varsigma$ is appended to the primary Merkle tree (which exists on the \Ethereum mainnet in the form of a smart contract), the $tree$ $index$ $t_i$ and $leaf$ $index$ $l_i$ of the commitment is logged as an \Ethereum event. When the owner of $n$ wishes to spend $n$, the logged information is used to determine a valid \MPath in the following algorithm:
+
+\begin{description}
+
+\item[\rm \func{getPath}{$t_i$}{$l_i$}]
+\hfill \\
+Determines a \MPath $\psi$ and root hash $rt$ for the commitment $\varsigma$ at the specified indices.
+
+\textsc{Inputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $t_i$ : \UintTFS
+	\item $l_i$ : \UintSF
+\end{itemize}
+\textsc{Outputs:}
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $\psi$ : \MPath
+	\item $rt$ : \UintTFS
+\end{itemize}
+\end{description}
+
+
+\subsection{JoinSplit Transactions}
+A $JoinSplit$ transaction is a shielded transaction spending (by revealing their nullifiers) two input \Note{}s and creating two output \Note{}s.
+\subsubsection{JoinSplit statements}
+Because a $JoinSplit$ transaction is shielded via a zk-SNARK, it is attested to with a proof $\pi$. In this context, a proof can be referred to as a statement. Let a $JoinSplit$ $statement$'s type-identifier be \JoinSplit, which denotes a specific proof $\pi$ with
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $rt$ : \UintTFS{}[$2$]
+	\item $\vec{\nf}^{old}$ : \UintTFS{}[$2$]
+	\item $\vec{\varsigma}$ : \UintTFS{}[$2$]
+	\item $v_{pub}^{old}$ : \UintSF
+	\item $v_{pub}^{new}$ : \UintSF
+	\item $c_{addr}$ : \UintOS
+	\item $h_{sig}$ : \UintTFS
+	\item $\vec{h}$ : \UintTFS{}[$2$]
+\end{itemize}
+as the $primary$ $input$ and
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item $\vec{\psi}$ : \MPath{}[$2$]
+	\item $\vec{n}^{old}$ : \Note{}[$2$]
+	\item $\vecask$ : \UintTFT{}[$2$]
+	\item $\vec{n}^{new}$ : \Note{}[$2$]
+	\item $\varphi$ : \UintTFT
+\end{itemize}
+as the $auxiliary$ $input$ that satisfies the following constraints:
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item \textbf{Merkle path validity} --- (which is enforced if $v_{pub}^{old} \neq 0$) where each $n_i \in \vec{n}^{old}$, when hashed with the values of $\psi_i$, MUST produce $rt_i$.
+	\item \textbf{Contract address equivalence} --- (which is enforced if $v_{pub}^{old} \neq 0 \lor v_{pub}^{new} \neq 0$) where $c_{addr}$ MUST match each $n^{old}_i.c_{addr} \in \vec{n}^{old}$ and $n^{new}_i.c_{addr} \in \vec{n}^{new}$.
+	\item \textbf{Balance} --- $ v_{pub}^{old} + \sum_{i=1}^{2} n_{i}^{old}.v = v_{pub}^{new} + \sum_{i=1}^{2} n_{i}^{new}.v \in \{0 .. 2^{64} - 1\}$.
+	\item \textbf{Nullifier integrity} --- for each $i \in \{1, 2\}: \nf_{i}^{old} = \func{compNull}{n_i}{\aski{}_i} $.% (where \func{compNull} is as described in \cref{sec:nullifs}).
+	\item \textbf{Spend authority} --- for each $i \in \{1, 2\}: n_i^{old}.\apkT = \func{derivePubAccountKey}{\aski{}_i}$.
+	\item \textbf{Non-malleability} --- for each $i \in \{1, 2\}: h_{i} = \func{compAuth}{i}{\aski{}_i}{h_{sig}} $ (where \func{compAuth}{...}\xspace is as described in \cref{sec:authCodes}).
+	\item \textbf{Uniqueness of $\vec{\rho}^{new}$} --- for each $i \in \{1, 2\}: n_i.\rho^{new} = \func{derRho}{i}{\varphi}{h_{sig}} $ (where \func{derRho}{...}\xspace is as described in \cref{sec:derRho}).
+	\item \textbf{Note commitment integrity} --- for each $i \in \{1, 2\}: \varsigma = \func{commit}{n_i}.$
+\end{itemize}
+
+\newcommand{\JoinSplitKeyPair}{\textsf{JoinSplitKeyPair}\xspace}
+\newcommand{\JoinSplitSig}{\textsf{JoinSplitSig}\xspace}
+
+\newcommand{\ecrecover}{\texttt{ECRECOVER}\xspace}
+
+\newcommand{\jssk}{$\gamma_{sk}$\xspace}
+\newcommand{\jspk}{$\gamma_{pk}$\xspace}
+
+\subsubsection{Derivation and role of \hSig}
+There are couple of measures in place to ensure that a transaction cannot be tampered with. The signature scheme described in \cref{sec:jsSig} is one measure to prevent tampering with a \JoinSplit $\jmath$. Another measure is the manner in which $\jmath$'s \hSig is computed and how \hSig is used to generate authentication codes $\vec{h}$ for $\vec{n}^{old}$.
+\\
+\\
+\noindent
+\hSig is computed with the following algorithm:
+\begin{description}
+		\item[\rm \func{compHSig}{$randomSeed$}{$\vec{\theta}^{old}$}{\jspk{}}]
+	\hfill \\
+	Computes a unique identifier \hSig for a shielded transaction, where:
+	\begin{lscenter}
+		\hSig $:=$ \func{keccak}{``\texttt{tnnlComputehSig}''$\concat{}randomSeed\concat\vec{\theta}^{old}\concat$\jspk}
+	\end{lscenter}b
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $randomSeed$ : \UintTFS
+		\item $\vec{\theta}^{old}$ : \UintTFS{}[]
+		\item \jspk{} : \UintOS
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item \hSig{} : \UintTFS
+	\end{itemize}
+\end{description}
+
+\subsubsubsection{Non-malleability authentication codes}\label{sec:authCodes}
+For each $n_i$ in $\vec{n}^{old}$, a non-malleability authentication code $h$ (that ensures the owner of $n_i$ has authorized the use of their private key \ask in the transaction) is generated using the following algorithm:
+
+\begin{description}
+	\item[\rm \func{compAuth}{$i$}{\ask{}}{\hSig{}}]
+	\hfill \\
+	Computes an authentication code $h$ for the private key \ask corresponding to the \Note $n$ at zeroed-index $i$, where:
+	\begin{lscenter}
+		$h :=$ \func{prf}{$0$}{$i$}{$0$}{$0$}{\ask{}}{\hSig{}}
+	\end{lscenter}
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $i$ : \Bit
+		\item \ask{} : \UintTFT{}
+		\item \hSig{} : \UintTFS
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $h$ : \UintTFS
+	\end{itemize}
+\end{description}
+
+\subsubsection{Derivation of $\rho$}\label{sec:derRho}
+Since authentic notes (as opposed to dummy notes) are created as the result of a transaction where there exists an \hSig{}, their commitments incorporate this \hSig as an input into the following algorithm that derives the $\rho$ (that is used to compute a nullifier at a later point in time):
+
+\begin{description}
+	\item[\rm \func{derRho}{$i$}{$\varphi$}{\hSig{}}]
+	\hfill \\
+	Derives a unique $\rho$ for the commitment $\varsigma$ of a \Note $n^{new}$ at index $i$, using $\varphi$ as a random private seed, where:
+	\begin{lscenter}
+		$\rho :=$ \func{prf}{$0$}{$i$}{$0$}{$0$}{$\varphi$}{\hSig{}}
+	\end{lscenter}
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $i$ : \Bit
+		\item $\varphi$ : \UintTFT{}
+		\item \hSig{} : \UintTFS
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $\rho$ : \UintTFS
+	\end{itemize}
+\end{description}
+
+\subsection{tnnlJoinSplit Descriptions}
+A \tJoinSplit transaction contains \textit{two} \JoinSplit{}s, where:
+\begin{itemize}
+	\item \network denotes the \JoinSplit statement for the network token paid to the broadcaster of the transaction
+	\item \shielded denotes the arbitrary token being privately transacted in an unknown manner
+\end{itemize}
+For the purpose of efficiency, the primary inputs for both \JoinSplit statements are concatenated and computed and verified as a single proof $\pi$.
+
+\subsubsection{tnnlJoinSplit serialization}
+
+The following algorithms are used for the serialization of a \JoinSplit and \tJoinSplit $\jmath$ respectively.
+
+\begin{description}
+	\item[\rm \func{serJS}{$\jmath_{JS}$}]
+	\hfill \\
+	$\jmath_{JS}$ is unpacked to produce
+		($rt$, % : \UintTFS{}[$2$]
+	 $\vec{\nf}^{old}$, % : \UintTFS{}[$2$]
+	$\vec{\varsigma}$, % : \UintTFS{}[$2$]
+%	$v_{pub}^{old}$, % : \UintSF
+%	$v_{pub}^{new}$, % : \UintSF
+%	$c_{addr}$, % : \UintOS
+	$h_{sig}$, % : \UintTFS
+	$\vec{h}$). % : \UintTFS{}[$2$]
+	\begin{lscenter}
+		$packed := rt_0 \concat rt_1 \concat h_{sig} \concat \nf^{old}_0 \concat h_0 \concat  \nf^{old}_1 \concat h_1 \concat \varsigma_0 \concat \varsigma_1 $
+	\end{lscenter}
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $\jmath_{JS}$ : \JoinSplit
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $packed$ : \BString
+	\end{itemize}
+
+	\item[\rm \func{serTJS}{$\jmath_{tJS}$}]
+	\hfill \\
+	\func{serJS} is used with each property of $\jmath_{tJS}$. In addition, $\jmath_{tJS}$.\network is unpacked to produce 
+	($\network_{v_{pub}^{old}}$, % : \UintSF
+	$\network_{v_{pub}^{new}}$, % : \UintSF
+	$\network_{c_{addr}}$) and, similarly, $\jmath_{tJS}$.\shielded is unpacked to produce
+	($\shielded_{v_{pub}^{old}}$, % : \UintSF
+	$\shielded_{v_{pub}^{new}}$, % : \UintSF
+	$\shielded_{c_{addr}}$).
+	\begin{lscenter}
+		$packed_{\network} := $ \func{serJS}{$\jmath_{tJS}$.\network{}}
+		\\
+		$packed_{\shielded} := $ \func{serJS}{$\jmath_{tJS}$.\shielded{}}
+		\\
+		$packed_{\textit{\textsf{all}}} := packed_{\network} \concat packed_{\shielded} \concat \network_{v_{pub}^{old}} \concat \network_{v_{pub}^{new}} \concat \shielded_{v_{pub}^{old}} \concat \shielded_{v_{pub}^{net}} \concat \network_{c_{addr}} \concat \shielded_{c_{addr}} $
+	\end{lscenter}
+	\textsc{Inputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $\jmath_{tJS}$ : \tJoinSplit
+	\end{itemize}
+	\textsc{Outputs:}
+	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $packed_{\textit{\textsf{all}}}$ : \BString
+	\end{itemize}
+\end{description}
+
+\subsubsection{JoinSplit signatures}\label{sec:jsSig}
+
+To ensure that no party can tamper with a \tJoinSplit transaction $\jmath$, $\jmath$ is cryptographically signed in a signature scheme referred to as \JoinSplitSig.
+
+Because these \tJoinSplit transactions are verified on the \Ethereum network, there is an associated gas cost with the signature verification. In order to be as efficient as possible, the \ecrecover precompiled contract (specified in \cite{ethYell}) is used, as it bears the lowest possible gas cost for a signature scheme.
+
+\noindent
+\\
+A \JoinSplitKeyPair is a tuple (\jssk, \jspk), where:
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item \jssk{} : \UintTFS is the signer's private key
+	\item \jspk{} : \UintOS is the signer's public key, which takes the form of an \Ethereum address, although it is not used as such.
+\end{itemize}
+
+\noindent
+\\
+In practice, \JoinSplitSig is really an implementation of the standard \Ethereum digital signature algorithm (EIP 191 formatted) (where the result of \func{serTJS}{$\jmath$}\xspace is passed as the ``message'' and a random ``ephemeral'' \JoinSplitKeyPair $\gamma$ is generated and $\gamma$'s \jssk component is used as the private key).
+
+% https://eips.ethereum.org/EIPS/eip-191
+% The \tJoinSplit
+%
+% \JoinSplitSig ($\jmath$, privateKey)
+%    hashedTx := Keccak256(\func{serTJS}{$\jmath$})
+%    formattedTx := "Ethereum Signed Message: " \concat hashedTx
+%    rehashedTx := Keccak256(formattedTx)
+%    EccMul(rehashedTx, privateKey)
+%
+% // this should compute the ephemeral public key, which is used as in input to hSig
+
+% % uint[8] _proof, uint[24] _unpackedInputs, uint _randomSeed, uint64 _fee, address[3] _recipients, bytes _encryptedNotes
+% hashTx(_proof, _unpackedInputs, _randomSeed, _fee, _recipients, _encryptedNotes)
+%
+%
+%
+%
+%
+%TODO: Encrypted Notes!!!
+
+
+\section{Acknowledgments}
+
+Special thanks go to the inventors of \Zerocash \emdash Eli Ben-Sasson, Alessandro Chiesa,
+Christina Garman, Matthew Green, Ian Miers, Eran Tromer, and Madars
+Virza \emdash and the designers of the \Zcash protocol, which are the \Zerocash inventors
+and also Daira Hopwood, Sean bBowe, Jack Grigg, Simon Liu, Taylor Hornby,
+Nathan Wilcox, Zooko Wilcox, Jay Graber, Ariel Gabizon, and George Tankersley. The designers of the \tnnl protocol are Alex Geiger and Julian Geiger.
+
+Many of the ideas utilized by the aforementioned privacy-focused protocols were first applied to digital currencies
+by Tomas Sander and Amnon Ta--Shma. To a certain extent, \Zerocash{}, \Zcash{}, and \tnnl are refinements
+of their ``Auditable, Anonymous Electronic Cash'' proposal in \cite{ST1999}.
+
+We would also like to
+thank the designers and developers of both \Bitcoin and \Ethereum.
+
+
+%https://www.math.uwaterloo.ca/~ajmeneze/publications/pairings.pdf
+%https://crypto.stanford.edu/~dabo/papers/bfibe.pdf ??? Undetermined if relevant for now; kept finding this as a source in multiple pairings papers . . .
+
+\printbibliography
+
+\end{document}

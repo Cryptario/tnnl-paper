@@ -1,5 +1,5 @@
 
-\newcommand{\version}{v0.9.4}
+\newcommand{\version}{v0.9.5}
 
 %-- PACKAGES AND LAYOUT ----------------------------------------------%
 \documentclass[letterpaper]{article}
@@ -930,10 +930,6 @@ The sender of a note uses their $ephemeral$ $private$ $key$ \esk as the first ar
 \noindent
 The shared secret \shs is used as an input to the following $key$ $derivation$ $function$:
 
-%TODO: KeyAgreement algorithm, group multiplicitive operation on secp256k1
-%TODO: explain the memo field
-%TODO: explain that i is the note index, since there are 2 in a joinsplit (but joinsplits haven't been convered yet...)
-
 %"The nonce is zero because we never reuse keys." Also 'no "additional data" '  . . .
 % The all-zero nonce may change! This would require another argument as part of the full tnnlJoinSplit description . . .
 
@@ -1009,18 +1005,18 @@ and \MNode is a tuple where:
 
 \noindent
 \newline
-When a \Note $n$'s commitment $\varsigma$ is appended to the primary Merkle tree (which exists on the \Ethereum mainnet in the form of a smart contract), the $tree$ $index$ $t_i$ and $leaf$ $index$ $l_i$ of the commitment is logged as an \Ethereum event. When the owner of $n$ wishes to spend $n$, the logged information is used to determine a valid \MPath in the following algorithm:
+When a \Note $n$'s commitment $\varsigma$ is appended to the primary Merkle tree (which exists on the \Ethereum mainnet in the form of a smart contract), the $tree$ $index$ $t_I$ and $leaf$ $index$ $l_I$ of the commitment is logged as an \Ethereum event. When the owner of $n$ wishes to spend $n$, the logged information is used to determine a valid \MPath in the following algorithm:
 
 \begin{description}
 
-\item[\rm \func{getPath}{$t_i$}{$l_i$}]
+\item[\rm \func{getPath}{$t_I$}{$l_I$}]
 \hfill \\
 Determines a \MPath $\psi$ and root hash $rt$ for the commitment $\varsigma$ at the specified indices.
 
 \textsc{Inputs:}
 \begin{itemize}[noitemsep,topsep=0pt]
-	\item $t_i$ : \UintTFS
-	\item $l_i$ : \UintSF
+	\item $t_I$ : \UintTFS
+	\item $l_I$ : \UintSF
 \end{itemize}
 \textsc{Outputs:}
 \begin{itemize}[noitemsep,topsep=0pt]
@@ -1148,6 +1144,10 @@ A \tJoinSplit transaction contains \textit{two} \JoinSplit{}s, where:
 	\item \shielded denotes the arbitrary token being privately transacted in an unknown manner
 \end{itemize}
 For the purpose of efficiency, the primary inputs for both \JoinSplit statements are concatenated and computed and verified as a single proof $\pi$.
+\\
+\\
+\noindent
+\textbf{NOTE:} Both the \network and the \shielded \JoinSplit{s} are given the same $randomSeed$ (when their respective $h_{sig}$ components are computed).
 
 \subsubsection{tnnlJoinSplit serialization}
 
@@ -1177,9 +1177,9 @@ The following algorithms are used for the serialization of a \JoinSplit and \tJo
 		\item $packed$ : \BString
 	\end{itemize}
 
-	\item[\rm \func{serTJS}{$\jmath_{tJS}$}]
+	\item[\rm \func{serTJS}{$\pi_{Groth16}$}{$\jmath_{tJS}$}{$randomSeed$}{$f$}{$rec_{addr}$}{$memos_{enc}$}]
 	\hfill \\
-	\func{serJS} is used with each property of $\jmath_{tJS}$. In addition, $\jmath_{tJS}$.\network is unpacked to produce 
+	\func{serJS}{...}\xspace is used with each property of $\jmath_{tJS}$. In addition, $\jmath_{tJS}$.\network is unpacked to produce 
 	($\network_{v_{pub}^{old}}$, % : \UintSF
 	$\network_{v_{pub}^{new}}$, % : \UintSF
 	$\network_{c_{addr}}$) and, similarly, $\jmath_{tJS}$.\shielded is unpacked to produce
@@ -1191,11 +1191,16 @@ The following algorithms are used for the serialization of a \JoinSplit and \tJo
 		\\
 		$packed_{\shielded} := $ \func{serJS}{$\jmath_{tJS}$.\shielded{}}
 		\\
-		$packed_{\textit{\textsf{all}}} := packed_{\network} \concat packed_{\shielded} \concat \network_{v_{pub}^{old}} \concat \network_{v_{pub}^{new}} \concat \shielded_{v_{pub}^{old}} \concat \shielded_{v_{pub}^{net}} \concat \network_{c_{addr}} \concat \shielded_{c_{addr}} $
+		$packed_{\textit{\textsf{all}}} := \pi_{Groth16} \concat packed_{\network} \concat packed_{\shielded} \concat \network_{v_{pub}^{old}} \concat \network_{v_{pub}^{new}} \concat \shielded_{v_{pub}^{old}} \concat \shielded_{v_{pub}^{net}} \concat \network_{c_{addr}} \concat \shielded_{c_{addr}} \concat randomSeed \concat f \concat rec_{addr} \concat memos_{enc} $
 	\end{lscenter}
 	\textsc{Inputs:}
 	\begin{itemize}[noitemsep,topsep=0pt]
+		\item $\pi_{Groth16}$ : \UintTFS[$8$] is a Groth16 \cite{groth16} proof flattened into a single array (i.e., $[A.X, A.Y, B.X.X, B.X.Y, B.Y.X, B.Y.Y, C.X, C.Y], where A, C \in \mathbb{G}_1 and B \in \mathbb{G}_2 $).
 		\item $\jmath_{tJS}$ : \tJoinSplit
+		\item $randomSeed$ : \UintTFS
+		\item $f$ : \UintSF is the public fee amount.
+		\item $rec_{addr}$ : \UintOS[$3$] is list of recipients for any public output value (i.e., $rec_{addr_0}$ is the receiving address for any $\network_{v_{pub}^{new}}$ value, $rec_{addr_1}$ is the receiving address for any $\shielded_{v_{pub}^{new}}$, and $rec_{addr_2}$ is the receiving address for the $f$ value).
+		\item  $memos_{enc}$ : \BString (length is $756 \times 4 \times 8$)
 	\end{itemize}
 	\textsc{Outputs:}
 	\begin{itemize}[noitemsep,topsep=0pt]

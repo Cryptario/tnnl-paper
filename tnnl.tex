@@ -1,5 +1,5 @@
 
-\newcommand{\version}{v0.9.5}
+\newcommand{\version}{v0.9.7}
 
 %-- PACKAGES AND LAYOUT ----------------------------------------------%
 \documentclass[letterpaper]{article}
@@ -282,7 +282,7 @@ particularly \Bitcoin \cite{bitcoin} and \Ethereum, is assumed.
 	produced. When viewed as a hash function itself, a Merkle tree of this description is \textbf{not} cryptographically-secure, as, by definition, it does not meet the second preimage resistance criterion.
 
 	\item[Fixed-Depth Merkle Tree \cite{incTrees}] \hfill \\ A subset of Merkle tree
-	where all appendations to the tree are at a predetermined depth---that is to say, all leaf-nodes are ``at the same level.''
+	where all appendations to the tree are at a predetermined depth \emdash that is to say, all leaf-nodes are ``at the same level.''
 	Only a finite amount of entries can be made to an
 	instance of a fixed-depth Merkle tree. When viewed as a hash function, a fixed-depth Merkle tree \textit{is} cryptographically-secure provided that the hash function used is also cryptographically secure.
 \end{description}
@@ -314,7 +314,9 @@ zk-SNARK proving protocol.
 
 The \Ethereum network, having launched on July 30, 2015, is a public-ledger that \emdash as it was developed prior to \SproutZcash\emdash has formed a prevailing `standard token' lacking the level of privacy enabled via zk-SNARKs. The result is \textit{more than} \$13,000,000,000 USD worth of tokens (at the time of publication) where all the token holders are determinable to powerful adversaries.
 
-After \SproutZcash demonstrated that its form of zero-knowledge proofs are a viable means of enabling confidential transactions, \Ethereum developers worked to add the capability to perform the same class of zero-knowledge proofs to its already-existing network. In the latest hard-fork to the \Ethereum network known as `Byzantium,' the capabilities to perform three elliptic curve operations were added in the form of `precompiled contracts.' These three operations are elliptic curve addition, scalar multiplication, and pairing checks. Together these three operations enable on-chain verifications of the same types of zero-knowledge proofs used by \SproutZcash\footnote{The elliptic curve operations provided in the `Byzantium' fork do not enable a reasonably secure version of the \SaplingZcash protocol to be implemented (which is why \tnnl is derived from the earlier \SproutZcash protocol), as the \Ethereum operations currently provided are implemented only for a particular elliptic curve. The curve used in \SaplingZcash has what is called an `embedded curve' (which is an elliptic curve implemented over the order of the actual curve acting as a finite field) of a high prime order, meaning that more sophisticated mechanisms can be used within zero-knowledge proofs. The \SproutZcash curve that the `Byzantium' fork provided does not have an embedded curve of prime order, meaning that the embedded curve is only as secure as its order's biggest prime factor. The \tnnl protocol does not rely on an embedded curve.}.
+After \SproutZcash demonstrated that its form of zero-knowledge proofs are a viable means of enabling confidential transactions, \Ethereum developers worked to add the capability to perform the same class of zero-knowledge proofs to its already-existing network. In the latest hard-fork to the \Ethereum network known as `Byzantium,' the capabilities to perform three elliptic curve operations were added in the form of `precompiled contracts.' These three operations are elliptic curve addition, scalar multiplication, and pairing checks.
+%TODO: CITE EIP
+Together these three operations enable on-chain verifications of the same types of zero-knowledge proofs used by \SproutZcash\footnote{The elliptic curve operations provided in the `Byzantium' fork do not enable a reasonably secure version of the \SaplingZcash protocol to be implemented (which is why \tnnl is derived from the earlier \SproutZcash protocol), as the \Ethereum operations currently provided are implemented only for a particular elliptic curve. The curve used in \SaplingZcash has what is called an `embedded curve' (which is an elliptic curve implemented over the order of the actual curve acting as a finite field) of a high prime order, meaning that more sophisticated mechanisms can be used within zero-knowledge proofs. The \SproutZcash curve that the `Byzantium' fork provided does not have an embedded curve of prime order, meaning that the embedded curve is only as secure as its order's biggest prime factor. The \tnnl protocol does not rely on an embedded curve.}.
 
 %https://etherscan.io/tokens
 %val = 0;trs = $('#ContentPlaceHolder1_divresult tbody').find('tr');$.each(trs, function (i, tr) { var value = (parseInt($(tr).find('td:last').html().replace(/[^0-9]/g, ''))); if (value && value > 0) { val+=value; } });console.log(val.toLocaleString());
@@ -343,6 +345,7 @@ Variables are not `reused' in  a zk-SNARK program. Instead of reassignment of a 
 
 \subsubsection{Common domain-specific library}
 Much of the leading zk-SNARK research has produced \texttt{libsnark}, an open-source C++ library with implementations of many proving systems. Most zk-SNARK-related projects either use \texttt{libsnark} directly or consume other libraries that utilize \texttt{libsnark}. 
+%TODO: CITE LIBSNARK
 
 %NOTE at some point: intermediary are often called computed variables...
 
@@ -485,7 +488,7 @@ Private transactions in \Zcash are \textit{note-oriented}, where the transaction
 
 A prover wishing to generate a transaction that spends a note first finds the commitment to that note in the tree, and then determines what is called the \textit{Merkle path} \emdash a list of all the digests that the commitment must be hashed with to produce the root hash of the tree \emdash and provides this private information along with the root hash of the tree as a primary input.
 
-The program uses the note commitment and Merkle path inputs to compute a root hash and provides constraints that the computed root hash must be equal to the publicly-inputted root hash. As long as a cryptographically-secure hash function is used for the Merkle tree, this approach to zero-knowledge set membership is cryptographically-sound since there is no other way to produce the root hash. Given the \textit{second preimage resistance} assumption, only either the true hashes of all the nodes and leaves (or a Merkle branch from the tree) can produce the root hash.
+The program uses the note commitment and Merkle path inputs to compute a root hash and provides constraints that the computed root hash must be equal to the publicly-inputted root hash. As long as a cryptographically-secure hash function is used for the Merkle tree, this approach to zero-knowledge set membership is cryptographically-sound since there is no other way to produce the root hash. Given the \textit{second preimage resistance} assumption, only the true hashes of all the nodes and leaves (or a Merkle branch from the tree) can produce the root hash.
 
 \subsection{Payment Confidentiality}
 %This is where the zk-SNARKs shine!
@@ -516,11 +519,12 @@ Notes, when spent, must publicly reveal a \textit{nullifier}. This nullifier is 
 
 \subsection{Transitioning From Transparent Protocol}
 Transitioning from a transparent, publicly-verifiable digital payment protocol, similar to \Bitcoin, to the shielded protocol described above requires the introduction of two more types of transactions. At this point, we are familiar with two types of transactions, but there are a total of four, as described by the \Zcash community:
+%TODO: CITE 'COMMUNITY'
 
 \begin{enumerate}
-	\item \textbf{Public:} Where both parties and the amounts are known. The transparent protocol of \Bitcoin falls into this classification. Tokens implementing the ERC20 interface also fall into this classification.
+	\item \textbf{Public:} Where both parties and the amounts are known. The transparent protocol of \Bitcoin falls into this classification. Tokens implementing the ERC20 interface (and those derived) also fall into this classification.
 	\item \textbf{Shielding:} Where the amount transacted is easy to determine, but the receiving address stores the balance essentially as a blinded hash, where any subsequent transaction amounts will not be exactly knowable (though, they cannot exceed the initial amount if no other spends occur involving the address in question).
-	\item \textbf{Deshielding:} The inverse of shielding; where a blinded amount is un-blinded and transacted to a transparent address.
+	\item \textbf{Deshielding:} The converse of shielding; where a blinded amount is un-blinded and transacted to a transparent address.
 	\item \textbf{Private:} Where the transaction occurs between two private addresses, and the amount transacted is not known. The shielded protocol described in the previous sections falls into this classification.
 \end{enumerate}
 
@@ -538,7 +542,7 @@ via a $v_{pub}^{new}$ parameter.
 A direct `port' of \Zcash's circuit is unsuitable for a  token-shielding system. There are primarily two compatibility challenges. While a random \Zcash transaction was successfully verified on an \Ethereum testnet, (1) there is a severe privacy concern with the fundamental nature of the \textbf{Ethereum Virtual Machine (EVM)} when the technology is sought to be used by real users on the \Ethereum network. There is also a concern (2) that many of the other operations that would need to be performed by an \Ethereum port of \Zcash upon a successful verification of a proof would bear too high of a gas cost.
 
 \subsection{The ``Gas Leak'' Challenge}
-Because \Ethereum network transactions require that the ``broadcaster'' of the transaction pay for the execution of the invoked code, and that the network currency, Ether, used to pay for the transaction lacks privacy features, any privacy-focused networks, systems, and tokens implemented on top of the \Ethereum network will be lacking in sender privacy.
+Because \Ethereum network transactions require that the ``broadcaster'' of the transaction pay for the execution of the invoked code, and that the network currency, Ether, used to pay for the transaction lacks privacy features, any privacy-focused networks, systems, and tokens na\"ively implemented on top of the \Ethereum network will be lacking in sender privacy.
 
 \subsubsection{``Gas leak'' solution}
 The solution to the issue of gas payments leaking information about a transaction requires a distinction between the \Ethereum network transaction, which can be viewed as an interaction on a relatively low-level protocol, and a transaction on the privacy layer network. The privacy layer network is implemented on top of the \Ethereum network.
@@ -581,7 +585,7 @@ The depth of the Merkle tree can be increased and bear the same computational eq
 
 One consequence of these changes is the loss of \textit{absolute} sender privacy. Instead of a spent note being any note, a spent note is now identifiable to a pool of $1024$ other notes. This is still superior to the level of privacy enabled by the \CryptoNote protocol (in terms of the set of the potential initiators of a transaction), used by \Monero and other Ring-Signature based privacy coins.
 
-With the switch to Groth16, the overall depth of the Merkle tree is larger, but it is still too shallow to be usable by a large network, as it would be exhausted fairly quickly. The na\"ive solution to this problem is to allow for multiple Merkle trees to be used, where notes are appended to a primary tree and once the primary tree is exhausted, all notes are appended to a \textit{new} primary tree, and so on. The issue with this solution is that it allows for an adversary to infringe upon a user's sender privacy by filling a primary tree with notes that they control in order to reduce the set of notes that a user could be spending from within a tree. This attack, with the shallow depth of the primary tree and an assumed cost of ~\$3 per transaction, is very cheap at ~\$768 USD. To resolve this issue, instead of \textit{a single} primary tree for notes to be appended to, \textit{multiple} ``primary'' trees are available to be appended to. In order to ensure that only one Merkle root needs to be recomputed per transaction, all output notes from a transaction are appended to the same tree (the number of outputs must be a power of two that is root (square, cubic, etc.) of a tree). The manner of determining the tree a transaction appends to is done by taking the hash of the $251$st-last block number modulo the (prime) number of concurrent trees.
+With the switch to Groth16, the overall depth of the Merkle tree is larger, but it is still too shallow to be usable by a large network, as it would be exhausted fairly quickly. The na\"ive solution to this problem is to allow for multiple Merkle trees to be used, where notes are appended to a primary tree and once the primary tree is exhausted, all notes are appended to a \textit{new} primary tree, and so on. The issue with this solution is that it allows for an adversary to infringe upon a user's sender privacy by filling a primary tree with notes that they control in order to reduce the set of notes that a user could be spending from within a tree. This attack, with the shallow depth of the primary tree and an assumed cost of ~\$3 per transaction, is very cheap at ~\$768 USD. To resolve this issue, instead of \textit{a single} primary tree for notes to be appended to, \textit{multiple} ``primary'' trees are available to be appended to. In order to ensure that only one Merkle root needs to be recomputed per transaction, all output notes from a transaction are appended to the same tree (the number of outputs must be a power of two that is a root (square, cubic, etc.) of a tree). The manner of determining the tree a transaction appends to is done by taking the hash of the $251$st-last block number modulo the (prime) number of concurrent trees.
 
 \section{Whisper Onion Router}\label{sec:whor}
 A user wishing to send a confidential payload selects three nodes on a particular Whisper topic, and, using the public keys of the selected nodes, encrypts the confidential transaction three times over using \func{ecdh}{\ldots{}}\xspace and  \func{chacha}{\ldots{}}\xspace (these algorithms are defined in \cref{sec:tnnlProtocol}).
@@ -625,7 +629,9 @@ As each transaction is recorded, $I_r$ is incremented (each increment is conside
 The \textit{maximum} value rewarded $r_{max}$ to the broadcaster of the transaction is calculated as the mapping of $I_r \mod S_T$ to $[C_T,N_T]$.
 
 \subsection{Precompile Gas Cost Reduction Foresight}
-To address the possibility of the gas costs of the precompiled contracts used within \tnnl being reduced (as \Ethereum clients arrive upon more optimized implementations) and impacting the smoothness of the \tnnl network token distribution, the gas $g$ used in the transaction is an argument that determines the actual value rewarded $r_{act}$ to the broadcaster of the transaction.
+To address the possibility of the gas costs of the precompiled contracts used within \tnnl being reduced (as \Ethereum clients arrive upon more optimized implementations)
+%TODO: CITE EIP
+and impacting the smoothness of the \tnnl network token distribution, the gas $g$ used in the transaction is an argument that determines the actual value rewarded $r_{act}$ to the broadcaster of the transaction.
 
 With each transaction, the average gas cost $g_{avg}$ (a moving average) is recomputed, and $r_{act}$ is the mapping of $g$ from $[1, g_{avg}]$ to $[0, r_{max}]$.\footnote{This specification of the calculation of $r_{act}$ is subject to change with experimentation of gas price tracking (as a measurement of transaction priority).}
 
@@ -1050,14 +1056,14 @@ as the $primary$ $input$ and
 \end{itemize}
 as the $auxiliary$ $input$ that satisfies the following constraints:
 \begin{itemize}[noitemsep,topsep=0pt]
-	\item \textbf{Merkle path validity} --- (which is enforced if $v_{pub}^{old} \neq 0$) where each $n_i \in \vec{n}^{old}$, when hashed with the values of $\psi_i$, MUST produce $rt_i$.
-	\item \textbf{Contract address equivalence} --- (which is enforced if $v_{pub}^{old} \neq 0 \lor v_{pub}^{new} \neq 0$) where $c_{addr}$ MUST match each $n^{old}_i.c_{addr} \in \vec{n}^{old}$ and $n^{new}_i.c_{addr} \in \vec{n}^{new}$.
-	\item \textbf{Balance} --- $ v_{pub}^{old} + \sum_{i=0}^{1} n_{i}^{old}.v = v_{pub}^{new} + \sum_{i=0}^{1} n_{i}^{new}.v \in \{0 .. 2^{64} - 1\}$.
-	\item \textbf{Nullifier integrity} --- for each $i \in \{0, 1\}: \nf_{i}^{old} = \func{compNull}{n_i}{\aski{}_i} $.% (where \func{compNull} is as described in \cref{sec:nullifs}).
-	\item \textbf{Spend authority} --- for each $i \in \{0, 1\}: n_i^{old}.\apkT = \func{derivePubAccountKey}{\aski{}_i}$.
-	\item \textbf{Non-malleability} --- for each $i \in \{0, 1\}: h_{i} = \func{compAuth}{i}{\aski{}_i}{h_{sig}} $ (where \func{compAuth}{...}\xspace is as described in \cref{sec:authCodes}).
-	\item \textbf{Uniqueness of $\vec{\rho}^{new}$} --- for each $i \in \{0, 1\}: n_i.\rho^{new} = \func{derRho}{i}{\varphi}{h_{sig}} $ (where \func{derRho}{...}\xspace is as described in \cref{sec:derRho}).
-	\item \textbf{Note commitment integrity} --- for each $i \in \{0, 1\}: \varsigma = \func{commit}{n_i}.$
+	\item \textbf{Merkle path validity} \emdash (which is enforced if $v_{pub}^{old} \neq 0$) where each $n_i \in \vec{n}^{old}$, when hashed with the values of $\psi_i$, MUST produce $rt_i$.
+	\item \textbf{Contract address equivalence} \emdash (which is enforced if $v_{pub}^{old} \neq 0 \lor v_{pub}^{new} \neq 0$) where $c_{addr}$ MUST match each $n^{old}_i.c_{addr} \in \vec{n}^{old}$ and $n^{new}_i.c_{addr} \in \vec{n}^{new}$.
+	\item \textbf{Balance} \emdash $ v_{pub}^{old} + \sum_{i=0}^{1} n_{i}^{old}.v = v_{pub}^{new} + \sum_{i=0}^{1} n_{i}^{new}.v \in \{0 .. 2^{64} - 1\}$.
+	\item \textbf{Nullifier integrity} \emdash for each $i \in \{0, 1\}: \nf_{i}^{old} = \func{compNull}{n_i}{\aski{}_i} $.% (where \func{compNull} is as described in \cref{sec:nullifs}).
+	\item \textbf{Spend authority} \emdash for each $i \in \{0, 1\}: n_i^{old}.\apkT = \func{derivePubAccountKey}{\aski{}_i}$.
+	\item \textbf{Non-malleability} \emdash for each $i \in \{0, 1\}: h_{i} = \func{compAuth}{i}{\aski{}_i}{h_{sig}} $ (where \func{compAuth}{...}\xspace is as described in \cref{sec:authCodes}).
+	\item \textbf{Uniqueness of $\vec{\rho}^{new}$} \emdash for each $i \in \{0, 1\}: n_i.\rho^{new} = \func{derRho}{i}{\varphi}{h_{sig}} $ (where \func{derRho}{...}\xspace is as described in \cref{sec:derRho}).
+	\item \textbf{Note commitment integrity} \emdash for each $i \in \{0, 1\}: \varsigma = \func{commit}{n_i}.$
 \end{itemize}
 
 \newcommand{\JoinSplitKeyPair}{\textsf{JoinSplitKeyPair}\xspace}
@@ -1200,7 +1206,7 @@ The following algorithms are used for the serialization of a \JoinSplit and \tJo
 		\item $randomSeed$ : \UintTFS
 		\item $f$ : \UintSF is the public fee amount.
 		\item $rec_{addr}$ : \UintOS[$3$] is list of recipients for any public output value (i.e., $rec_{addr_0}$ is the receiving address for any $\network_{v_{pub}^{new}}$ value, $rec_{addr_1}$ is the receiving address for any $\shielded_{v_{pub}^{new}}$, and $rec_{addr_2}$ is the receiving address for the $f$ value).
-		\item  $memos_{enc}$ : \BString (length is $756 \times 4 \times 8$)
+		\item  $memos_{enc}$ : \BString (length is $756 \times 4 \times 8$) is the pre-concatenated ciphertext of the four memos that are encrypted for the recipients of the corresponding notes.
 	\end{itemize}
 	\textsc{Outputs:}
 	\begin{itemize}[noitemsep,topsep=0pt]

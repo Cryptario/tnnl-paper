@@ -12,6 +12,8 @@ a means of operating in a confidential manner.
 
 [Read the full introductory "dark" paper and protocol specification!](../master/tnnl.pdf)
 
+[(Read it as a "white" paper)](../master/tnnl_white.pdf)
+
 ## FAQ
 
 *For all unanswered questions that you may have, please open an issue and we'll be sure to respond and update our README when possible (at time of last commit, we're currently fighting poor cellular and WiFi networks in Prague).*
@@ -34,7 +36,7 @@ a means of operating in a confidential manner.
 
 **Q:** *Are there any hardware/software requirements?*
 <br />
-**A:** Yes, but the exact specifications of the base-line requirements are to be determined as implementation progresses. Currently, it is estimated that 4GB of RAM is required for generating proofs. This proof generation program *can* be run inside a Docker container.
+**A:** Yes, but the exact specifications of the baseline requirements are to be determined as implementation progresses. Currently, it is estimated that 4GB of RAM is required for generating proofs. This proof generation program *can* be run inside a Docker container.
 
 **Q:** *Does *tnnl* suffer form the same problem as Zcash, where a trusted setup is required?*
 <br />
